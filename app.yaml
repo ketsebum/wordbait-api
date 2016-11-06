@@ -1,5 +1,3 @@
-application: gaming-140419
-version: 2
 runtime: python27
 api_version: 1
 threadsafe: yes
@@ -18,6 +16,14 @@ handlers:
 
 - url: /crons/send_reminder
   script: main.app
+
+- url: /
+  static_files: dist/index.html
+  upload: dist/index.html
+
+- url: /(.*)
+  static_files: dist/\1
+  upload: dist/(.*)
 
 libraries:
 - name: webapp2

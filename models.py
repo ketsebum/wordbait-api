@@ -16,10 +16,11 @@ from datetime import date
 from protorpc import messages
 from google.appengine.ext import ndb
 
+
 class User(ndb.Model):
     """User profile"""
     name = ndb.StringProperty(required=True)
-    email =ndb.StringProperty()
+    email = ndb.StringProperty()
 
 
 class Game(ndb.Model):
@@ -49,7 +50,7 @@ class Game(ndb.Model):
         users = User.query(User.key != user_one).fetch()
 
         # Random Matchmaking
-        user_two = users[randint(0,len(users)-1)].key
+        user_two = users[randint(0, len(users) - 1)].key
 
         # User one has starting word, thus player 2 must respond
         turn = user_two
@@ -82,7 +83,7 @@ class Game(ndb.Model):
         form.message = message
         form.bait = self.target[:self.current_round]
         return form
-    
+
     def cancel(self):
         if self.game_over:
             return StringMessage(message="Game already finished, not able to cancel!")
@@ -92,7 +93,6 @@ class Game(ndb.Model):
             self.put()
             return StringMessage(message="Cancelled Successfully!")
 
-
     def to_score_form(self):
         return ScoreForm(winner_name=self.winner.get().name, loser_name=self.loser.get().name,
                          date=str(self.date), rounds=self.current_round)
@@ -101,7 +101,8 @@ class Game(ndb.Model):
         """Ends the game - Winner is the user that won - loser is the opposite,
         player"""
 
-        record = GameHistory(game=self.key, target=self.target, move=final_word, user=self.turn, final_guess=True, round=self.current_round)
+        record = GameHistory(game=self.key, target=self.target, move=final_word, user=self.turn, final_guess=True,
+                             round=self.current_round)
         record.put()
 
         # Ending the game
@@ -147,7 +148,8 @@ class Game(ndb.Model):
         # but verify if valid word
         if self.target[:self.current_round] != word[:self.current_round]:
             raise ValueError('Must match original characters from bait to make new word!')
-        record = GameHistory(game=self.key, target=self.target, move=word, user=self.turn, final_guess=False, round=self.current_round)
+        record = GameHistory(game=self.key, target=self.target, move=word, user=self.turn, final_guess=False,
+                             round=self.current_round)
         record.put()
         self.current_round += 1
         self.target = word
@@ -162,6 +164,7 @@ class Game(ndb.Model):
         """Grab the history for this game"""
         history = GameHistory.query(GameHistory.game == self.key).fetch()
         return GameHistoryForms(items=[ref.to_form() for ref in history])
+
 
 class Leaderboard(ndb.Model):
     """Leaderboard object"""
@@ -180,9 +183,10 @@ class Leaderboard(ndb.Model):
     def current_rankings(self):
         ranking = Leaderboard.query().order(-Leaderboard.wins)
         return LeaderboardForms(items=[rank.to_form() for rank in ranking])
-    
+
     def to_form(self):
-        return LeaderboardForm(user = self.user.get().name, wins = self.wins, losses = self.losses)
+        return LeaderboardForm(user=self.user.get().name, wins=self.wins, losses=self.losses)
+
 
 class GameHistory(ndb.Model):
     """GameHistory object"""
@@ -194,7 +198,9 @@ class GameHistory(ndb.Model):
     round = ndb.IntegerProperty(required=True)
 
     def to_form(self):
-        return GameHistoryForm(user=self.user.get().name, target=self.target, final_guess=self.final_guess, move=self.move, round=self.round)
+        return GameHistoryForm(user=self.user.get().name, target=self.target, final_guess=self.final_guess,
+                               move=self.move, round=self.round)
+
 
 class LeaderboardForm(messages.Message):
     """LeaderboardForm for outbound game Leaderboard information"""
@@ -202,9 +208,11 @@ class LeaderboardForm(messages.Message):
     wins = messages.IntegerField(2, required=True)
     losses = messages.IntegerField(3, required=True)
 
+
 class LeaderboardForms(messages.Message):
     """Return multiple LeaderboardForms"""
     items = messages.MessageField(LeaderboardForm, 1, repeated=True)
+
 
 class GameHistoryForm(messages.Message):
     """GameForm for outbound game state information"""
@@ -214,9 +222,11 @@ class GameHistoryForm(messages.Message):
     move = messages.StringField(4, required=True)
     round = messages.IntegerField(5, required=True)
 
+
 class GameHistoryForms(messages.Message):
     """Return multiple GameHistoryForms"""
     items = messages.MessageField(GameHistoryForm, 1, repeated=True)
+
 
 class GameForm(messages.Message):
     """GameForm for outbound game state information"""
@@ -228,6 +238,7 @@ class GameForm(messages.Message):
     user_one = messages.StringField(6, required=True)
     user_two = messages.StringField(7, required=True)
     turn = messages.StringField(8, required=True)
+
 
 class GameForms(messages.Message):
     """Return multiple ScoreForms"""
