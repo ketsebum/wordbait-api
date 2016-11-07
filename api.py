@@ -23,6 +23,8 @@ MAKE_MOVE_REQUEST = endpoints.ResourceContainer(
     urlsafe_game_key=messages.StringField(1), )
 USER_REQUEST = endpoints.ResourceContainer(user_name=messages.StringField(1),
                                            email=messages.StringField(2))
+LOGIN_REQUEST = endpoints.ResourceContainer(user_name=messages.StringField(1),
+                                           password=messages.StringField(2))
 
 MEMCACHE_MOVES_REMAINING = 'MOVES_REMAINING'
 
@@ -35,6 +37,23 @@ class WordBaitAPI(remote.Service):
                       response_message=StringMessage,
                       path='user',
                       name='create_user',
+                      http_method='POST')
+    def create_user(self, request):
+        """Create a User. Requires a unique username"""
+        if User.query(User.name == request.user_name).get():
+            raise endpoints.ConflictException(
+                'A User with that name already exists!')
+        user = User(name=request.user_name, email=request.email)
+        user.put()
+        leaderboard = Leaderboard(user=user.key, wins=0, losses=0)
+        leaderboard.put()
+        return StringMessage(message='User {} created!'.format(
+            request.user_name))
+
+    @endpoints.method(request_message=LOGIN_REQUEST,
+                      response_message=StringMessage,
+                      path='login',
+                      name='login',
                       http_method='POST')
     def create_user(self, request):
         """Create a User. Requires a unique username"""
