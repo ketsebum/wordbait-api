@@ -1,0 +1,26 @@
+{
+  "id": "101310695807141694332",
+  "name": "Sean Nunley",
+  "email": "snunleys@gmail.com",
+  "token": "eyJhbGciOiJSUzI1NiIsImtpZCI6IjM4Y2FjZjM3ZjUyOWQ4YzM2ZDBlNmJkYzU5OTNlNWQ3Njk1ZDg5NzgifQ.eyJpc3MiOiJhY2NvdW50cy5nb29nbGUuY29tIiwiaWF0IjoxNDc5Nzc2MjgyLCJleHAiOjE0Nzk3Nzk4ODIsImF0X2hhc2giOiJhcGdlNDVNdUJkNDJsbDBEWGZZQ0Z3IiwiYXVkIjoiMTA2NjExNDY5MTQxOC1ubTBwNGtydWw3amVuajB2Y2syMGdsY3JoMjNubTFsbS5hcHBzLmdvb2dsZXVzZXJjb250ZW50LmNvbSIsInN1YiI6IjEwMTMxMDY5NTgwNzE0MTY5NDMzMiIsImVtYWlsX3ZlcmlmaWVkIjp0cnVlLCJhenAiOiIxMDY2MTE0NjkxNDE4LW5tMHA0a3J1bDdqZW5qMHZjazIwZ2xjcmgyM25tMWxtLmFwcHMuZ29vZ2xldXNlcmNvbnRlbnQuY29tIiwiZW1haWwiOiJzbnVubGV5c0BnbWFpbC5jb20iLCJuYW1lIjoiU2VhbiBOdW5sZXkiLCJwaWN0dXJlIjoiaHR0cHM6Ly9saDMuZ29vZ2xldXNlcmNvbnRlbnQuY29tLy1IYXhYQ2tUanRSYy9BQUFBQUFBQUFBSS9BQUFBQUFBQUFBQS9BRU1PWVNERnlYNnZ4NWtna1lfNDNac3VYREtzeHczcGdRL3M5Ni1jL3Bob3RvLmpwZyIsImdpdmVuX25hbWUiOiJTZWFuIiwiZmFtaWx5X25hbWUiOiJOdW5sZXkiLCJsb2NhbGUiOiJlbiJ9.FVXmKgkyYUlAW5V_Attix1bKWe9t1y1T7fk2TiIGwGek6QurFsSFqZx38nC5X32x9akporhRgJrmfcNMAKpS1VJUYzIp_3HxQ4bc2-_V9SLBqH8ZnF-qoS5qcQT39PauDJN-AJLakl1BJQGQtGhD29WUd4EedS1UCAm-67A4zRSG9xsnXYl7R7_p5LBkVaucqm-_bf0LGsnYY-rucYTMYvrX9Jcu_KMyA3OHHEEE4uITYXeo8QYBjOVQ69_BJL7hbyNhwe07pys5C4_zfWPFDSDFDbqp-UsZkKbr4o8_XLpeF57n1J0bPDIDlb9kd0c0MGSerzjwmJHI6D2LJCoidA"
+},
+
+{
+  "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJteS5kb21haW4uY29tIiwic3ViIjoxLCJpYXQiOjE0Nzk3NzY0MTYsImV4cCI6MTQ4MDM4MTIxNn0.ey1JwvX4T0Tm_LbAS5H_eElpj0rDOX2F-DFNKEyHU2o",
+  "user": {
+    "email": "sean@gmail.com",
+    "id": 1,
+    "name": "sean",
+    "location": null,
+    "website": null,
+    "picture": null,
+    "facebook": null,
+    "twitter": null,
+    "google": null,
+    "vk": null,
+    "created_at": "2016-10-30T18:45:04.961Z",
+    "updated_at": "2016-10-30T18:45:04.961Z",
+    "role_id": null,
+    "gravatar": "https://gravatar.com/avatar/17725f5327de7695d658f124636cbd23?s=200&d=retro"
+  }
+}

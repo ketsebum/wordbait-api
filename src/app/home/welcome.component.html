@@ -1,0 +1,8 @@
+<div class="panel panel-primary">
+  <div id="my-signin2" style="display: none;"></div>
+  Users from secure api end point:
+  <ul>
+    <li *ngIf="user">{{user.name}}</li>
+  </ul>
+  <button [disabled]="loading" (click)="test()" class="btn btn-success">test</button>
+</div>

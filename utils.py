@@ -2,6 +2,8 @@
 
 from models import User, Game
 import logging
+import webapp2
+from webapp2_extras import sessions
 from google.appengine.ext import ndb
 import endpoints
 

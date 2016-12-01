@@ -1,0 +1,29 @@
+<nav class="navbar navbar-default navbar-static-top">
+  <div class="container">
+    <div class="navbar-header">
+      <a href="/" class="navbar-brand">Word Bait</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li><a href="/">Home</a></li>
+        <li><a href="/contact">Contact</a></li>
+      </ul>
+      <ul *ngIf="loggedIn" class="nav navbar-nav navbar-right">
+        <li class="dropdown">
+          <a href="#" data-toggle="dropdown" class="navbar-avatar dropdown-toggle" *ngIf="user">
+            {{user.name}}<i class="caret"></i>
+          </a>
+          <ul class="dropdown-menu">
+            <li><a href="/account">My Account</a></li>
+            <li class="divider"></li>
+            <li><a (click)="logout()" href="#" [routerLink]="['/login']">Logout</a></li>
+          </ul>
+        </li>
+      </ul>
+      <ul *ngIf="!loggedIn" class="nav navbar-nav navbar-right">
+        <li><a href="/login">Log in</a></li>
+        <li><a [routerLink]="['/signup']" >Sign up</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>

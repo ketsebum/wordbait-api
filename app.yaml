@@ -17,9 +17,26 @@ handlers:
 - url: /crons/send_reminder
   script: main.app
 
+- url: /login
+  script: main.app
+  secure: always
+
+- url: /signup
+  script: main.app
+
+- url: /secure
+  script: main.app
+  secure: always
+
+- url: /oauth2callback
+  script: main.app
+
 - url: /
   static_files: dist/index.html
   upload: dist/index.html
+
+#- url: /
+#  script: main.app
 
 - url: /(.*)
   static_files: dist/\1

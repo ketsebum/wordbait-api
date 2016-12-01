@@ -12,7 +12,8 @@ from google.appengine.api import taskqueue
 
 from models import User, Game, GameHistory
 from models import StringMessage, NewGameForm, GameForm, MakeMoveForm, \
-    ScoreForms, GameForms, Leaderboard, LeaderboardForm, LeaderboardForms, GameHistoryForm, GameHistoryForms
+    ScoreForms, GameForms, Leaderboard, LeaderboardForm, LeaderboardForms, GameHistoryForm, GameHistoryForms, \
+    LoginForm
 from utils import get_by_urlsafe, get_user
 
 NEW_GAME_REQUEST = endpoints.ResourceContainer(NewGameForm)
@@ -51,21 +52,14 @@ class WordBaitAPI(remote.Service):
             request.user_name))
 
     @endpoints.method(request_message=LOGIN_REQUEST,
-                      response_message=StringMessage,
+                      response_message=LoginForm,
                       path='login',
                       name='login',
                       http_method='POST')
-    def create_user(self, request):
+    def login(self, request):
         """Create a User. Requires a unique username"""
-        if User.query(User.name == request.user_name).get():
-            raise endpoints.ConflictException(
-                'A User with that name already exists!')
-        user = User(name=request.user_name, email=request.email)
-        user.put()
-        leaderboard = Leaderboard(user=user.key, wins=0, losses=0)
-        leaderboard.put()
-        return StringMessage(message='User {} created!'.format(
-            request.user_name))
+        user = get_user(request.user_name)
+        return user.login(request.password)
 
     @endpoints.method(request_message=NEW_GAME_REQUEST,
                       response_message=GameForm,
