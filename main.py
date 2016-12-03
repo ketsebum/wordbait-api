@@ -114,12 +114,11 @@ class LoginHandler(BaseHandler):
         # Raises InvalidPasswordError if provided password doesn't match with specified user
         try:
             user = self.auth.get_user_by_password(username, password)
-            print user
             ret = {
                 "token": user['token'],
                 "user" : {
-                    "name": user['name']
-                    # "email": user['email']
+                    "name": user['name'],
+                    "email": username
                 }
             }
             self.response.headers['Content-Type'] = 'application/json'
@@ -159,8 +158,8 @@ class CreateUserHandler(BaseHandler):
                 ret = {
                     "token": user['token'],
                     "user": {
-                        "name": user['name']
-                        # "email": user['email']
+                        "name": user['name'],
+                        "email": username
                     }
                 }
                 self.response.headers['Content-Type'] = 'application/json'

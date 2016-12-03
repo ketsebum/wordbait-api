@@ -71,7 +71,7 @@ class WordBaitAPI(remote.Service):
         user = get_user(request.user_name)
 
         try:
-            game = Game.new_game(user.key, request.word)
+            game = Game.new_game(user.key)
         except ValueError:
             raise endpoints.BadRequestException('Minimum word length must be greater than 3!')
 

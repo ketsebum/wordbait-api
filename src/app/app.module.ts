@@ -10,12 +10,13 @@ import { HttpModule } from '@angular/http';
 import { AppComponent }  from './app.component';
 import { HeaderComponent } from './header/index';
 import { FooterComponent } from './footer/index';
-import { routing } from './app.routing';
+import { AppRoutingModule } from './app-routing.module';
 
 import { AuthGuard } from './_guards/index';
-import { AuthenticationService, UserService } from './_services/index';
+import { AuthenticationService, UserService, GameService } from './_services/index';
 import { LoginComponent } from './login/index';
 import { SignUpComponent } from './signup/index';
+import { NewGameComponent } from './new_game/index';
 import { WelcomeComponent } from './home/index';
 
 @NgModule({
@@ -23,7 +24,7 @@ import { WelcomeComponent } from './home/index';
     BrowserModule,
     FormsModule,
     HttpModule,
-    routing
+    AppRoutingModule
   ],
   declarations: [
     AppComponent,
@@ -31,11 +32,13 @@ import { WelcomeComponent } from './home/index';
     HeaderComponent,
     FooterComponent,
     SignUpComponent,
+    NewGameComponent,
     WelcomeComponent
   ],
   providers: [
     AuthGuard,
     AuthenticationService,
+    GameService,
     UserService
   ],
   bootstrap: [AppComponent]

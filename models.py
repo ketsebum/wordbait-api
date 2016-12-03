@@ -56,17 +56,12 @@ class User(webapp2_extras.appengine.auth.models.User):
 
         return None, None
 
-    def login(self, password):
-        return self.to_form()
-
-    def to_form(self):
-        return LoginForm(token="WOOO", username=self.username, name=self.name)
-
 class Game(ndb.Model):
     """Game object"""
     target = ndb.StringProperty(required=True)
     current_round = ndb.IntegerProperty(required=True, default=1)
     game_over = ndb.BooleanProperty(required=True, default=False)
+    confirmed = ndb.BooleanProperty(required=True, default=False)
     cancelled = ndb.BooleanProperty(required=True, default=False)
     turn = ndb.KeyProperty(required=True, kind='User')
     user_one = ndb.KeyProperty(required=True, kind='User')
@@ -76,10 +71,10 @@ class Game(ndb.Model):
     loser = ndb.KeyProperty(required=False, kind='User')
 
     @classmethod
-    def new_game(cls, user_one, word):
+    def new_game(cls, user_one):
         """Creates and returns a new game"""
-        if len(word) < 4:
-            raise ValueError('Minimum word length must be greater than 3')
+        # if len(word) < 4:
+        #     raise ValueError('Minimum word length must be greater than 3')
 
         # Use the dictionary to validate the words used
         # dictionary = enchant.Dict("en_US")
@@ -104,7 +99,7 @@ class Game(ndb.Model):
         game = Game(user_one=user_one,
                     user_two=user_two,
                     turn=turn,
-                    target=word,
+                    target="",
                     current_round=1,
                     game_over=False)
         game.put()
@@ -115,12 +110,15 @@ class Game(ndb.Model):
         form = GameForm()
         form.urlsafe_key = self.key.urlsafe()
         form.user_one = self.user_one.get().name
+        form.user_one_email = self.user_one.get().email
         form.user_two = self.user_two.get().name
-        form.turn = self.turn.get().name
+        form.user_two_email = self.user_two.get().email
+        form.turn = self.turn.get().email
         form.current_round = self.current_round
         form.game_over = self.game_over
         form.message = message
         form.bait = self.target[:self.current_round]
+        form.confirmed = self.confirmed
         return form
 
     def cancel(self):
@@ -275,8 +273,11 @@ class GameForm(messages.Message):
     message = messages.StringField(4, required=True)
     bait = messages.StringField(5, required=True)
     user_one = messages.StringField(6, required=True)
-    user_two = messages.StringField(7, required=True)
-    turn = messages.StringField(8, required=True)
+    user_one_email = messages.StringField(7, required=True)
+    user_two = messages.StringField(8, required=True)
+    user_two_email = messages.StringField(9, required=True)
+    turn = messages.StringField(10, required=True)
+    confirmed = messages.BooleanField(11, required=True)
 
 
 class GameForms(messages.Message):
@@ -287,7 +288,6 @@ class GameForms(messages.Message):
 class NewGameForm(messages.Message):
     """Used to create a new game"""
     user_name = messages.StringField(1, required=True)
-    word = messages.StringField(2, required=True)
 
 class LoginForm(messages.Message):
     """Used to create a new game"""
