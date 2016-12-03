@@ -18,12 +18,13 @@ var http_1 = require('@angular/http');
 var app_component_1 = require('./app.component');
 var index_1 = require('./header/index');
 var index_2 = require('./footer/index');
-var app_routing_1 = require('./app.routing');
+var app_routing_module_1 = require('./app-routing.module');
 var index_3 = require('./_guards/index');
 var index_4 = require('./_services/index');
 var index_5 = require('./login/index');
 var index_6 = require('./signup/index');
-var index_7 = require('./home/index');
+var index_7 = require('./new_game/index');
+var index_8 = require('./home/index');
 var AppModule = (function () {
     function AppModule() {
     }
@@ -36,7 +37,7 @@ var AppModule = (function () {
                 platform_browser_1.BrowserModule,
                 forms_1.FormsModule,
                 http_1.HttpModule,
-                app_routing_1.routing
+                app_routing_module_1.AppRoutingModule
             ],
             declarations: [
                 app_component_1.AppComponent,
@@ -44,11 +45,13 @@ var AppModule = (function () {
                 index_1.HeaderComponent,
                 index_2.FooterComponent,
                 index_6.SignUpComponent,
-                index_7.WelcomeComponent
+                index_7.NewGameComponent,
+                index_8.WelcomeComponent
             ],
             providers: [
                 index_3.AuthGuard,
                 index_4.AuthenticationService,
+                index_4.GameService,
                 index_4.UserService
             ],
             bootstrap: [app_component_1.AppComponent]

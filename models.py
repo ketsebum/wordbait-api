@@ -26,6 +26,13 @@ class User(webapp2_extras.appengine.auth.models.User):
     name = ndb.StringProperty(required=True)
     email = ndb.StringProperty(required=True)
 
+    def get_all_users(self):
+        users = User.query().fetch()
+        return UserForms(items=[ref.to_form() for ref in users])
+
+    def to_form(self):
+        return UserForm(name = self.name)
+
     def set_password(self, raw_password):
         """Sets the password for the current user
 
@@ -288,6 +295,7 @@ class GameForms(messages.Message):
 class NewGameForm(messages.Message):
     """Used to create a new game"""
     user_name = messages.StringField(1, required=True)
+    opponent = messages.StringField(2, required=False)
 
 class LoginForm(messages.Message):
     """Used to create a new game"""
@@ -301,6 +309,14 @@ class MakeMoveForm(messages.Message):
     word = messages.StringField(1, required=True)
     user_name = messages.StringField(2, required=True)
     final_guess = messages.BooleanField(3, required=True)
+
+class UserForm(messages.Message):
+    """Return multiple ScoreForms"""
+    name = messages.StringField(1, required=True)
+
+class UserForms(messages.Message):
+    """Return multiple ScoreForms"""
+    items = messages.MessageField(UserForm, 1, repeated=True)
 
 
 class ScoreForm(messages.Message):

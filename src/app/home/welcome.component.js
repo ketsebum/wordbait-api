@@ -9,37 +9,36 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 var core_1 = require('@angular/core');
+var router_1 = require('@angular/router');
 var index_1 = require('../_services/index');
 var WelcomeComponent = (function () {
-    function WelcomeComponent(userService) {
+    function WelcomeComponent(userService, gameService, router) {
         this.userService = userService;
+        this.gameService = gameService;
+        this.router = router;
         this.users = [];
         this.token = JSON.parse(localStorage.getItem('currentUser')).token;
         this.user = userService.getUser();
+        this.games = gameService.getUserGames(this.user.name);
+        console.log(this.user);
     }
     WelcomeComponent.prototype.test = function () {
-        console.log("Here is a list of the entire API");
-        console.log(gapi.client.word_bait);
-        gapi.client.word_bait.get_games().execute(function (resp) {
-            if (resp.result) {
-                console.log(resp);
-            }
-        });
+        console.log(this.games);
+    };
+    WelcomeComponent.prototype.newGame = function () {
+        this.router.navigate(['/newgame']);
+    };
+    WelcomeComponent.prototype.confirmGame = function () {
+        // gameService.confirmGame();
     };
     WelcomeComponent.prototype.ngOnInit = function () {
-        var apisToLoad;
-        var callback = function () {
-            if (--apisToLoad === 0) {
-            }
-        };
-        apisToLoad = 1; // must match number of calls to gapi.client.load()
-        gapi.client.load('word_bait', 'v1', callback, 'https://gaming-140419.appspot.com/_ah/api/');
+        this.games = this.gameService.getUserGames(this.user.name);
     };
     WelcomeComponent = __decorate([
         core_1.Component({
             templateUrl: 'app/home/welcome.component.html'
         }), 
-        __metadata('design:paramtypes', [index_1.UserService])
+        __metadata('design:paramtypes', [index_1.UserService, index_1.GameService, router_1.Router])
     ], WelcomeComponent);
     return WelcomeComponent;
 }());

@@ -10,13 +10,15 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 var core_1 = require('@angular/core');
 var router_1 = require('@angular/router');
-var index_1 = require('../_services/index');
+var index_1 = require('../_models/index');
+var index_2 = require('../_services/index');
 var LoginComponent = (function () {
     function LoginComponent(router, authenticationService) {
         this.router = router;
         this.authenticationService = authenticationService;
         this.loggingIn = new core_1.EventEmitter();
         this.model = {};
+        this.object = {};
         this.loading = false;
         this.error = '';
     }
@@ -27,11 +29,10 @@ var LoginComponent = (function () {
         var startApp = function () {
             gapi.load('auth2', function () {
                 // Retrieve the singleton for the GoogleAuth library and set up the client.
-                auth2 = gapi.auth2.init({
+                // added let to auth2 not sure if it should be there
+                var auth2 = gapi.auth2.init({
                     client_id: '1066114691418-nm0p4krul7jenj0vck20glcrh23nm1lm.apps.googleusercontent.com',
-                    cookiepolicy: 'single_host_origin',
                 });
-                attachSignin(document.getElementById('customBtn'));
             });
         };
     };
@@ -45,6 +46,25 @@ var LoginComponent = (function () {
             'theme': 'light',
             'onsuccess': function (param) { return _this.onSignIn(param); }
         });
+    };
+    LoginComponent.prototype.onSignIn = function (googleUser) {
+        var user = new index_1.User();
+        this.object.user = new index_1.User();
+        (function (u, p) {
+            u.id = p.getId();
+            u.name = p.getName();
+            u.email = p.getEmail();
+            // u.imageUrl      = p.getImageUrl();
+            // u.givenName     = p.getGivenName();
+            // u.familyName    = p.getFamilyName();
+        })(this.object.user, googleUser.getBasicProfile());
+        (function (u, r) {
+            u.token = r.id_token;
+        })(this.object, googleUser.getAuthResponse());
+        // user.save();
+        localStorage.setItem('currentUser', JSON.stringify(this.object));
+        // this.loggingIn.emit(true);
+        this.router.navigate(['/']);
     };
     LoginComponent.prototype.signUp = function () {
         this.router.navigate(['/signup']);
@@ -64,19 +84,6 @@ var LoginComponent = (function () {
             }
         });
     };
-    LoginComponent.prototype.authenticate = function (type) {
-        if (type === 'google') {
-        }
-    };
-    LoginComponent.prototype.attachSignin = function (element) {
-        console.log(element.id);
-        auth2.attachClickHandler(element, {}, function (googleUser) {
-            document.getElementById('name').innerText = "Signed in: " +
-                googleUser.getBasicProfile().getName();
-        }, function (error) {
-            alert(JSON.stringify(error, undefined, 2));
-        });
-    };
     __decorate([
         core_1.Output(), 
         __metadata('design:type', Object)
@@ -85,7 +92,7 @@ var LoginComponent = (function () {
         core_1.Component({
             templateUrl: 'app/login/login.component.html'
         }), 
-        __metadata('design:paramtypes', [router_1.Router, index_1.AuthenticationService])
+        __metadata('design:paramtypes', [router_1.Router, index_2.AuthenticationService])
     ], LoginComponent);
     return LoginComponent;
 }());

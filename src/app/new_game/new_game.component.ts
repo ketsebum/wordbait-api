@@ -5,7 +5,7 @@ import {Component, OnInit, EventEmitter, Output} from '@angular/core';
 import {Router} from '@angular/router';
 
 import { User } from '../_models/index';
-import {AuthenticationService} from '../_services/index';
+import {UserService, GameService} from '../_services/index';
 
 @Component({
     templateUrl: 'app/new_game/new_game.component.html'
@@ -13,13 +13,14 @@ import {AuthenticationService} from '../_services/index';
 
 export class NewGameComponent implements OnInit {
     @Output() loggingIn = new EventEmitter<boolean>();
-    model: any = {};
-    object: any = {};
-    loading = false;
-    error = '';
+    user: User;
+    users: any = {};
 
     constructor(private router: Router,
-                private authenticationService: AuthenticationService) {
+                private userService: UserService,
+                private gameService: GameService) {
+        this.users = userService.getUsersService();
+        this.user = userService.getUser();
     }
 
     ngOnInit() {
@@ -27,7 +28,13 @@ export class NewGameComponent implements OnInit {
     }
 
     createGame() {
-
+        this.gameService
+            .newGame(this.user.name)
+            .then(result => {
+                if (result) { console.log(result);}
+                this.router.navigate(['/']);
+            });
+        // this.router.navigate(['/']);
     }
 
 }

@@ -8,6 +8,8 @@ import { User } from '../_models/index';
 
 @Injectable()
 export class UserService {
+  private apiURL = '/_ah/api/word_bait/v1/';  // URL to web api
+  private allURL = 'all/users';  // URL to web api
   private token: string;
   private loggedIn = new Subject<string>();
   user: User;
@@ -40,6 +42,18 @@ export class UserService {
 
     // get users from api
     return this.http.get('/account', options)
-      .map((response: Response) => response.json());
+        .map((response: Response) => response.json());
+  }
+
+  getUsersService(): Promise<any> {
+    // add authorization header with jwt token
+    let headers = new Headers({ 'Authorization': 'Bearer ' + this.authenticationService.token });
+    let options = new RequestOptions({ headers: headers });
+
+    // get users from api
+    return this.http.get(this.apiURL + this.allURL, options)
+        .toPromise()
+        .then(response => response.json().items)
+        .catch();
   }
 }

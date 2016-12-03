@@ -1,4 +1,5 @@
 import {Component, OnInit} from '@angular/core';
+import {Router} from '@angular/router';
 
 import {User} from '../_models/index';
 import {UserService, GameService} from '../_services/index';
@@ -13,7 +14,7 @@ export class WelcomeComponent implements OnInit {
     games: any;
     token: String = JSON.parse(localStorage.getItem('currentUser')).token;
 
-    constructor(private userService: UserService, private gameService: GameService) {
+    constructor(private userService: UserService, private gameService: GameService, private router: Router) {
         this.user = userService.getUser();
         this.games = gameService.getUserGames(this.user.name);
         console.log(this.user);
@@ -24,10 +25,14 @@ export class WelcomeComponent implements OnInit {
     }
 
     newGame() {
-        this.gameService.newGame(this.user.name);
-        this.games = this.gameService.getUserGames(this.user.name);
+        this.router.navigate(['/newgame']);
+    }
+
+    confirmGame() {
+        // gameService.confirmGame();
     }
 
     ngOnInit() {
+        this.games = this.gameService.getUserGames(this.user.name);
     }
 }

@@ -4,4 +4,5 @@ function __export(m) {
 }
 __export(require('./authentication.service'));
 __export(require('./user.service'));
+__export(require('./game.service'));
 //# sourceMappingURL=index.js.map

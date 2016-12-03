@@ -16,6 +16,8 @@ var UserService = (function () {
     function UserService(http, authenticationService) {
         this.http = http;
         this.authenticationService = authenticationService;
+        this.apiURL = '/_ah/api/word_bait/v1/'; // URL to web api
+        this.allURL = 'all/users'; // URL to web api
         this.loggedIn = new Subject_1.Subject();
         this.currentUser$ = this.loggedIn.asObservable();
     }
@@ -37,6 +39,16 @@ var UserService = (function () {
         // get users from api
         return this.http.get('/account', options)
             .map(function (response) { return response.json(); });
+    };
+    UserService.prototype.getUsersService = function () {
+        // add authorization header with jwt token
+        var headers = new http_1.Headers({ 'Authorization': 'Bearer ' + this.authenticationService.token });
+        var options = new http_1.RequestOptions({ headers: headers });
+        // get users from api
+        return this.http.get(this.apiURL + this.allURL, options)
+            .toPromise()
+            .then(function (response) { return response.json().items; })
+            .catch();
     };
     UserService = __decorate([
         core_1.Injectable(), 
