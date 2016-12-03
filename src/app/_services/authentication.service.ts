@@ -68,10 +68,21 @@ export class AuthenticationService {
       }
     });
   }
+  private deleteCookie(name) {
+    this.setCookie(name, "", -1);
+  }
+
+  private setCookie(name: string, value: string, expireDays: number, path: string = "") {
+    let d:Date = new Date();
+    d.setTime(d.getTime() + expireDays * 24 * 60 * 60 * 1000);
+    let expires:string = "expires=" + d.toUTCString();
+    document.cookie = name + "=" + value + "; " + expires + (path.length > 0 ? "; path=" + path : "");
+  }
 
   logout(): void {
     // clear token remove user from local storage to log user out
     this.token = null;
     localStorage.removeItem('currentUser');
+    this.deleteCookie("auth");
   }
 }

@@ -69,10 +69,21 @@ var AuthenticationService = (function () {
             }
         });
     };
+    AuthenticationService.prototype.deleteCookie = function (name) {
+        this.setCookie(name, "", -1);
+    };
+    AuthenticationService.prototype.setCookie = function (name, value, expireDays, path) {
+        if (path === void 0) { path = ""; }
+        var d = new Date();
+        d.setTime(d.getTime() + expireDays * 24 * 60 * 60 * 1000);
+        var expires = "expires=" + d.toUTCString();
+        document.cookie = name + "=" + value + "; " + expires + (path.length > 0 ? "; path=" + path : "");
+    };
     AuthenticationService.prototype.logout = function () {
         // clear token remove user from local storage to log user out
         this.token = null;
         localStorage.removeItem('currentUser');
+        this.deleteCookie("auth");
     };
     AuthenticationService = __decorate([
         core_1.Injectable(), 
