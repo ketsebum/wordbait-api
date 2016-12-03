@@ -9,6 +9,8 @@ import {UserService, GameService} from '../_services/index';
     styleUrls: ['app/home/welcome.component.css']
 })
 
+//TODO: STOP USING EMAILS AS COMPARISON CHANGE TO USING ID
+
 export class WelcomeComponent implements OnInit {
     users: User[] = [];
     user: User;
