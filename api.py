@@ -13,7 +13,7 @@ from google.appengine.api import taskqueue
 from models import User, Game, GameHistory
 from models import StringMessage, NewGameForm, GameForm, MakeMoveForm, \
     ScoreForms, GameForms, Leaderboard, LeaderboardForm, LeaderboardForms, GameHistoryForm, GameHistoryForms, \
-    LoginForm
+    LoginForm, UserForm, UserForms
 from utils import get_by_urlsafe, get_user
 
 NEW_GAME_REQUEST = endpoints.ResourceContainer(NewGameForm)
@@ -51,16 +51,6 @@ class WordBaitAPI(remote.Service):
         return StringMessage(message='User {} created!'.format(
             request.user_name))
 
-    @endpoints.method(request_message=LOGIN_REQUEST,
-                      response_message=LoginForm,
-                      path='login',
-                      name='login',
-                      http_method='POST')
-    def login(self, request):
-        """Create a User. Requires a unique username"""
-        user = get_user(request.user_name)
-        return user.login(request.password)
-
     @endpoints.method(request_message=NEW_GAME_REQUEST,
                       response_message=GameForm,
                       path='game',
@@ -68,6 +58,7 @@ class WordBaitAPI(remote.Service):
                       http_method='POST')
     def new_game(self, request):
         """Creates new game"""
+        print request.user_name
         user = get_user(request.user_name)
 
         try:
@@ -183,13 +174,13 @@ class WordBaitAPI(remote.Service):
         game = get_by_urlsafe(request.urlsafe_game_key, Game)
         return game.cancel()
 
-    # Not needed because of two player game
-    # @endpoints.method(response_message=StringMessage,
-    #                   path='high/scores',
-    #                   name='get_high_scores',
-    #                   http_method='GET')
-    # def get_high_scores(self, request):
-    #     """Return all high scores"""
+    @endpoints.method(response_message=UserForms,
+                      path='all/users',
+                      name='all_users',
+                      http_method='GET')
+    def all_users(self, request):
+        """Get All Users"""
+        return User.query().get().get_all_users()
 
     @endpoints.method(response_message=LeaderboardForms,
                       path='rank',

@@ -38,7 +38,7 @@ def get_by_urlsafe(urlsafe, model):
     return entity
 
 def get_user(request):
-    user = User.query(User.name == request).get()
+    user = User.query(User.email == request).get()
     if not user:
         raise endpoints.NotFoundException(
                 'A User with that name does not exist!')
