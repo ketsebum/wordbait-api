@@ -19,24 +19,37 @@ var WelcomeComponent = (function () {
         this.users = [];
         this.token = JSON.parse(localStorage.getItem('currentUser')).token;
         this.user = userService.getUser();
-        this.games = gameService.getUserGames(this.user.email);
-        console.log(this.user);
     }
     WelcomeComponent.prototype.test = function () {
-        console.log(this.games);
     };
     WelcomeComponent.prototype.newGame = function () {
         this.router.navigate(['/newgame']);
     };
-    WelcomeComponent.prototype.confirmGame = function () {
-        // gameService.confirmGame();
+    WelcomeComponent.prototype.confirmGame = function (confirm) {
+        var _this = this;
+        this.gameService
+            .confirmGame(confirm.urlsafe_key)
+            .then(function () { return _this.updateGame(confirm); });
+    };
+    WelcomeComponent.prototype.updateGame = function (update) {
+        for (var i = 0, l = this.games.length; i < l; i++) {
+            if (this.games[i].urlsafe_key === update.urlsafe_key)
+                this.games[i].confirmed = true;
+        }
+    };
+    WelcomeComponent.prototype.getGames = function () {
+        var _this = this;
+        this.gameService
+            .getUserGames(this.user.email)
+            .then(function (games) { return _this.games = games; });
     };
     WelcomeComponent.prototype.ngOnInit = function () {
-        this.games = this.gameService.getUserGames(this.user.email);
+        this.getGames();
     };
     WelcomeComponent = __decorate([
         core_1.Component({
-            templateUrl: 'app/home/welcome.component.html'
+            templateUrl: 'app/home/welcome.component.html',
+            styleUrls: ['app/home/welcome.component.css']
         }), 
         __metadata('design:paramtypes', [index_1.UserService, index_1.GameService, router_1.Router])
     ], WelcomeComponent);

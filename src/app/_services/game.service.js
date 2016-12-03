@@ -22,6 +22,7 @@ var GameService = (function () {
         this.gamesURL = 'games';
         this.gamesUserURL = 'games/active/';
         this.newGameURL = 'game';
+        this.confirmURL = 'confirm/';
     }
     GameService.prototype.getGames = function () {
         return this.http.get(this.apiURL + this.gamesURL)
@@ -35,10 +36,12 @@ var GameService = (function () {
             .then(function (response) { return response.json().items; })
             .catch(this.handleError);
     };
-    // getHero(id: number): Promise<Hero> {
-    //     return this.getHeroes()
-    //         .then(heroes => heroes.find(hero => hero.id === id));
-    // }
+    GameService.prototype.confirmGame = function (urlSafeKey) {
+        return this.http.get(this.apiURL + this.confirmURL + urlSafeKey)
+            .toPromise()
+            .then(function (response) { return response.json(); })
+            .catch(this.handleError);
+    };
     GameService.prototype.newGame = function (name) {
         var url = this.apiURL + this.newGameURL;
         return this.http.post(url, JSON.stringify({ user_name: name }), { headers: this.headers })
@@ -46,21 +49,6 @@ var GameService = (function () {
             .then(function (response) { return response.json(); })
             .catch(this.handleError);
     };
-    // create(name: string): Promise<Hero> {
-    //     return this.http
-    //         .post(this.apiURL, JSON.stringify({name: name}), {headers: this.headers})
-    //         .toPromise()
-    //         .then(res => res.json().data)
-    //         .catch(this.handleError);
-    // }
-    // update(hero: Hero): Promise<Hero> {
-    //     const url = `${this.apiURL}/${hero.id}`;
-    //     return this.http
-    //         .put(url, JSON.stringify(hero), {headers: this.headers})
-    //         .toPromise()
-    //         .then(() => hero)
-    //         .catch(this.handleError);
-    // }
     GameService.prototype.handleError = function (error) {
         console.error('An error occurred', error); // for demo purposes only
         return Promise.reject(error.message || error);
