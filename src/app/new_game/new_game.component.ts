@@ -29,7 +29,7 @@ export class NewGameComponent implements OnInit {
 
     createGame() {
         this.gameService
-            .newGame(this.user.name)
+            .newGame(this.user.email)
             .then(result => {
                 if (result) { console.log(result);}
                 this.router.navigate(['/']);

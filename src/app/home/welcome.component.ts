@@ -16,7 +16,7 @@ export class WelcomeComponent implements OnInit {
 
     constructor(private userService: UserService, private gameService: GameService, private router: Router) {
         this.user = userService.getUser();
-        this.games = gameService.getUserGames(this.user.name);
+        this.games = gameService.getUserGames(this.user.email);
         console.log(this.user);
     }
 
@@ -33,6 +33,6 @@ export class WelcomeComponent implements OnInit {
     }
 
     ngOnInit() {
-        this.games = this.gameService.getUserGames(this.user.name);
+        this.games = this.gameService.getUserGames(this.user.email);
     }
 }

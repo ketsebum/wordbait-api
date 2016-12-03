@@ -19,7 +19,7 @@ var WelcomeComponent = (function () {
         this.users = [];
         this.token = JSON.parse(localStorage.getItem('currentUser')).token;
         this.user = userService.getUser();
-        this.games = gameService.getUserGames(this.user.name);
+        this.games = gameService.getUserGames(this.user.email);
         console.log(this.user);
     }
     WelcomeComponent.prototype.test = function () {
@@ -32,7 +32,7 @@ var WelcomeComponent = (function () {
         // gameService.confirmGame();
     };
     WelcomeComponent.prototype.ngOnInit = function () {
-        this.games = this.gameService.getUserGames(this.user.name);
+        this.games = this.gameService.getUserGames(this.user.email);
     };
     WelcomeComponent = __decorate([
         core_1.Component({

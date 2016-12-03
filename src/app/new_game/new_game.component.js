@@ -29,7 +29,7 @@ var NewGameComponent = (function () {
     NewGameComponent.prototype.createGame = function () {
         var _this = this;
         this.gameService
-            .newGame(this.user.name)
+            .newGame(this.user.email)
             .then(function (result) {
             if (result) {
                 console.log(result);
