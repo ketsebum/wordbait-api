@@ -15,6 +15,7 @@ export class WelcomeComponent implements OnInit {
     users: User[] = [];
     user: User;
     games: Game[];
+    selectedGame: Game;
     token: String = JSON.parse(localStorage.getItem('currentUser')).token;
 
     constructor(private userService: UserService, private gameService: GameService, private router: Router) {
@@ -26,6 +27,10 @@ export class WelcomeComponent implements OnInit {
 
     newGame() {
         this.router.navigate(['/newgame']);
+    }
+
+    viewGame(game: Game) {
+        this.router.navigate(['/game', game.urlsafe_key]);
     }
 
     confirmGame(confirm: Game) {

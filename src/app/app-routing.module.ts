@@ -4,6 +4,7 @@ import { Routes, RouterModule } from '@angular/router';
 import { LoginComponent } from './login/index';
 import { SignUpComponent } from './signup/index';
 import { NewGameComponent } from './new_game/index';
+import { ViewGameComponent } from './viewgame/index';
 import { WelcomeComponent } from './home/index';
 import { AuthGuard } from './_guards/index';
 
@@ -11,6 +12,7 @@ const appRoutes: Routes = [
   { path: 'login', component: LoginComponent },
   { path: 'signup', component: SignUpComponent },
   { path: 'newgame', component: NewGameComponent },
+  { path: 'game/:id', component: ViewGameComponent },
   { path: '', component: WelcomeComponent, canActivate: [AuthGuard] },
   { path: '**', redirectTo: '' }
 ];

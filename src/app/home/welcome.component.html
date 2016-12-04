@@ -25,12 +25,14 @@
             <h4>Current Bait: {{game.bait}}</h4>
             <br>
             <p>
-                <a *ngIf="user.email!=game.turn && game.confirmed" href="#" class="btn btn-primary" (click)="test()" role="button">View
-                    Your Game</a>
-                <a *ngIf="user.email==game.turn  && game.confirmed" href="#" class="btn btn-primary" (click)="test()" role="button">Make a
-                    Move</a>
-                <a *ngIf="user.email==game.user_one_email && !game.confirmed" href="#" class="btn btn-primary disabled" role="button">Waiting for confirmation</a>
-                <a *ngIf="user.email==game.user_two_email && !game.confirmed" href="#" class="btn btn-primary" (click)="confirmGame(game)" role="button">Confirm The Game</a>
+                <a *ngIf="user.email!=game.turn && game.confirmed" class="btn btn-primary" (click)="viewGame(game)"
+                   role="button">View Your Game</a>
+                <a *ngIf="user.email==game.turn  && game.confirmed" class="btn btn-primary" (click)="viewGame(game)"
+                   role="button">Make a Move</a>
+                <a *ngIf="user.email==game.user_one_email && !game.confirmed" href="#" class="btn btn-primary disabled"
+                   role="button">Waiting for confirmation</a>
+                <a *ngIf="user.email==game.user_two_email && !game.confirmed" href="#" class="btn btn-primary"
+                   (click)="confirmGame(game)" role="button">Confirm The Game</a>
             </p>
         </div>
     </div>

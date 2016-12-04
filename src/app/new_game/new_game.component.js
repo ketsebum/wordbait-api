@@ -19,7 +19,6 @@ var NewGameComponent = (function () {
         this.router = router;
         this.userService = userService;
         this.gameService = gameService;
-        this.loggingIn = new core_1.EventEmitter();
         this.users = {};
         this.users = userService.getUsersService();
         this.user = userService.getUser();
@@ -38,10 +37,6 @@ var NewGameComponent = (function () {
         });
         // this.router.navigate(['/']);
     };
-    __decorate([
-        core_1.Output(), 
-        __metadata('design:type', Object)
-    ], NewGameComponent.prototype, "loggingIn", void 0);
     NewGameComponent = __decorate([
         core_1.Component({
             templateUrl: 'app/new_game/new_game.component.html'

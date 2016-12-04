@@ -12,7 +12,6 @@ import {UserService, GameService} from '../_services/index';
 })
 
 export class NewGameComponent implements OnInit {
-    @Output() loggingIn = new EventEmitter<boolean>();
     user: User;
     users: any = {};
 

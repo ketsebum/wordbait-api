@@ -5,7 +5,7 @@ import { Injectable }    from '@angular/core';
 import { Headers, Http } from '@angular/http';
 import 'rxjs/add/operator/toPromise';
 
-import {Game} from '../_models/index';
+import {Game, Move} from '../_models/index';
 
 @Injectable()
 export class GameService {
@@ -13,7 +13,8 @@ export class GameService {
     private apiURL = '/_ah/api/word_bait/v1/';  // URL to web api
     private gamesURL = 'games';
     private gamesUserURL = 'games/active/';
-    private newGameURL = 'game';
+    private gameURL = 'game/';
+    private moveURL = 'move';
     private confirmURL = 'confirm/';
     constructor(private http: Http) { }
     getGames(): Promise<Game[]> {
@@ -34,9 +35,23 @@ export class GameService {
             .then(response => response.json() as Game)
             .catch(this.handleError);
     }
+    getGame(urlSafeKey: string): Promise<Game> {
+        return this.http.get(this.apiURL + this.gameURL + urlSafeKey)
+            .toPromise()
+            .then(response => response.json() as Game)
+            .catch(this.handleError);
+    }
     newGame(name: string): Promise<Game> {
-        const url = this.apiURL + this.newGameURL;
+        const url = this.apiURL + this.gameURL;
         return this.http.post(url, JSON.stringify({user_name: name}), {headers: this.headers})
+            .toPromise()
+            .then(response => response.json())
+            .catch(this.handleError);
+    }
+    makeMove(move: Move): Promise<Game> {
+        const url = this.apiURL + this.moveURL;
+        return this.http.put(url, JSON.stringify({user_name: move.user_name, word: move.word,
+            final_guess: move.final_guess, urlsafe_game_key: move.urlsafe_key}), {headers: this.headers})
             .toPromise()
             .then(response => response.json())
             .catch(this.handleError);

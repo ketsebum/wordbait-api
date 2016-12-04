@@ -25,6 +25,9 @@ var WelcomeComponent = (function () {
     WelcomeComponent.prototype.newGame = function () {
         this.router.navigate(['/newgame']);
     };
+    WelcomeComponent.prototype.viewGame = function (game) {
+        this.router.navigate(['/game', game.urlsafe_key]);
+    };
     WelcomeComponent.prototype.confirmGame = function (confirm) {
         var _this = this;
         this.gameService

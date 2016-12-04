@@ -21,7 +21,8 @@ var GameService = (function () {
         this.apiURL = '/_ah/api/word_bait/v1/'; // URL to web api
         this.gamesURL = 'games';
         this.gamesUserURL = 'games/active/';
-        this.newGameURL = 'game';
+        this.gameURL = 'game/';
+        this.moveURL = 'move';
         this.confirmURL = 'confirm/';
     }
     GameService.prototype.getGames = function () {
@@ -42,9 +43,23 @@ var GameService = (function () {
             .then(function (response) { return response.json(); })
             .catch(this.handleError);
     };
+    GameService.prototype.getGame = function (urlSafeKey) {
+        return this.http.get(this.apiURL + this.gameURL + urlSafeKey)
+            .toPromise()
+            .then(function (response) { return response.json(); })
+            .catch(this.handleError);
+    };
     GameService.prototype.newGame = function (name) {
-        var url = this.apiURL + this.newGameURL;
+        var url = this.apiURL + this.gameURL;
         return this.http.post(url, JSON.stringify({ user_name: name }), { headers: this.headers })
+            .toPromise()
+            .then(function (response) { return response.json(); })
+            .catch(this.handleError);
+    };
+    GameService.prototype.makeMove = function (move) {
+        var url = this.apiURL + this.moveURL;
+        return this.http.put(url, JSON.stringify({ user_name: move.user_name, word: move.word,
+            final_guess: move.final_guess, urlsafe_game_key: move.urlsafe_key }), { headers: this.headers })
             .toPromise()
             .then(function (response) { return response.json(); })
             .catch(this.handleError);

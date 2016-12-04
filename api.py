@@ -19,9 +19,7 @@ from utils import get_by_urlsafe, get_user
 NEW_GAME_REQUEST = endpoints.ResourceContainer(NewGameForm)
 GET_GAME_REQUEST = endpoints.ResourceContainer(
     urlsafe_game_key=messages.StringField(1), )
-MAKE_MOVE_REQUEST = endpoints.ResourceContainer(
-    MakeMoveForm,
-    urlsafe_game_key=messages.StringField(1), )
+MAKE_MOVE_REQUEST = endpoints.ResourceContainer(MakeMoveForm)
 USER_REQUEST = endpoints.ResourceContainer(user_name=messages.StringField(1),
                                            email=messages.StringField(2))
 LOGIN_REQUEST = endpoints.ResourceContainer(user_name=messages.StringField(1),
@@ -102,7 +100,7 @@ class WordBaitAPI(remote.Service):
 
     @endpoints.method(request_message=MAKE_MOVE_REQUEST,
                       response_message=GameForm,
-                      path='game/{urlsafe_game_key}',
+                      path='move',
                       name='make_move',
                       http_method='PUT')
     def make_move(self, request):

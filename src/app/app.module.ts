@@ -17,6 +17,7 @@ import { AuthenticationService, UserService, GameService } from './_services/ind
 import { LoginComponent } from './login/index';
 import { SignUpComponent } from './signup/index';
 import { NewGameComponent } from './new_game/index';
+import { ViewGameComponent } from './viewgame/index';
 import { WelcomeComponent } from './home/index';
 
 @NgModule({
@@ -33,6 +34,7 @@ import { WelcomeComponent } from './home/index';
     FooterComponent,
     SignUpComponent,
     NewGameComponent,
+    ViewGameComponent,
     WelcomeComponent
   ],
   providers: [

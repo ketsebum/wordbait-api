@@ -107,7 +107,7 @@ class Game(ndb.Model):
                     user_two=user_two,
                     turn=turn,
                     target="",
-                    current_round=1,
+                    current_round=0,
                     game_over=False)
         game.put()
         return game
@@ -309,6 +309,7 @@ class MakeMoveForm(messages.Message):
     word = messages.StringField(1, required=True)
     user_name = messages.StringField(2, required=True)
     final_guess = messages.BooleanField(3, required=True)
+    urlsafe_game_key = messages.StringField(4, required=True)
 
 class UserForm(messages.Message):
     """Return multiple ScoreForms"""

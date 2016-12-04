@@ -24,7 +24,8 @@ var index_4 = require('./_services/index');
 var index_5 = require('./login/index');
 var index_6 = require('./signup/index');
 var index_7 = require('./new_game/index');
-var index_8 = require('./home/index');
+var index_8 = require('./viewgame/index');
+var index_9 = require('./home/index');
 var AppModule = (function () {
     function AppModule() {
     }
@@ -46,7 +47,8 @@ var AppModule = (function () {
                 index_2.FooterComponent,
                 index_6.SignUpComponent,
                 index_7.NewGameComponent,
-                index_8.WelcomeComponent
+                index_8.ViewGameComponent,
+                index_9.WelcomeComponent
             ],
             providers: [
                 index_3.AuthGuard,

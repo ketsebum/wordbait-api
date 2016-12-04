@@ -13,13 +13,15 @@ var router_1 = require('@angular/router');
 var index_1 = require('./login/index');
 var index_2 = require('./signup/index');
 var index_3 = require('./new_game/index');
-var index_4 = require('./home/index');
-var index_5 = require('./_guards/index');
+var index_4 = require('./viewgame/index');
+var index_5 = require('./home/index');
+var index_6 = require('./_guards/index');
 var appRoutes = [
     { path: 'login', component: index_1.LoginComponent },
     { path: 'signup', component: index_2.SignUpComponent },
     { path: 'newgame', component: index_3.NewGameComponent },
-    { path: '', component: index_4.WelcomeComponent, canActivate: [index_5.AuthGuard] },
+    { path: 'game/:id', component: index_4.ViewGameComponent },
+    { path: '', component: index_5.WelcomeComponent, canActivate: [index_6.AuthGuard] },
     { path: '**', redirectTo: '' }
 ];
 var AppRoutingModule = (function () {
