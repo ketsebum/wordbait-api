@@ -25,12 +25,12 @@ from webapp2_extras.auth import InvalidPasswordError
 from google.appengine.api import mail, app_identity
 from api import WordBaitAPI
 
-from models import User, Game
+from models import User, Game, Leaderboard
 webapp2_config = {}
 webapp2_config = {
   'webapp2_extras.auth': {
     'user_model': 'models.User',
-    'user_attributes': ['name']
+    'user_attributes': ['name', 'verified']
   },
   'webapp2_extras.sessions': {
     'secret_key': 'Im_an_alien'
@@ -76,6 +76,7 @@ class BaseHandler(webapp2.RequestHandler):
 
     @webapp2.cached_property
     def auth(self):
+        """Shortcut to access the auth instance as a property."""
         return auth.get_auth()
 
     @webapp2.cached_property
@@ -84,8 +85,27 @@ class BaseHandler(webapp2.RequestHandler):
 
     @webapp2.cached_property
     def session(self):
+        """Shortcut to access the current session."""
         # Returns a session using the default cookie key.
         return self.session_store.get_session()
+
+    @webapp2.cached_property
+    def user_model(self):
+        """Returns the implementation of the user model.
+        It is consistent with config['webapp2_extras.auth']['user_model'], if set.
+        """
+        return self.auth.store.user_model
+
+    @webapp2.cached_property
+    def user_info(self):
+        """Shortcut to access a subset of the user attributes that are stored
+        in the session.
+        The list of attributes to store in the session is specified in
+          config['webapp2_extras.auth']['user_attributes'].
+        :returns
+          A dictionary with most user information
+        """
+        return self.auth.get_user_by_session()
 
     @webapp2.cached_property
     def auth_config(self):
@@ -96,6 +116,20 @@ class BaseHandler(webapp2.RequestHandler):
             'login_url': self.uri_for('login'),
             'logout_url': self.uri_for('logout')
         }
+
+    def send_verification_email(self, user, verification_url):
+        """Send a reminder email to each User with an email about games.
+        Called every hour using a cron job"""
+        app_id = app_identity.get_application_id()
+        active_games = Game.query(Game.game_over == False).fetch()
+        subject = 'Verification!'
+        body = 'Hello {name}, Here is your verification email. Please visit <a href="{url}">{url}</a>'.format(name=user['name'], url=verification_url)
+        mail.send_mail('noreply@{}.appspotmail.com'.format(app_id),
+                       "snunleys@gmail.com",
+                       # user['email'],
+                       subject,
+                       body)
+
 
 
 class LoginHandler(BaseHandler):
@@ -118,7 +152,9 @@ class LoginHandler(BaseHandler):
                 "token": user['token'],
                 "user" : {
                     "name": user['name'],
-                    "email": username
+                    "email": username,
+                    "verified": user['verified'],
+                    "id": user['user_id']
                 }
             }
             self.response.headers['Content-Type'] = 'application/json'
@@ -131,6 +167,24 @@ class LoginHandler(BaseHandler):
             self.response.write("{'msg': 'invalid e-mail or password'}")
             self.response.set_status(401)
             return e
+
+class AccountHandler(BaseHandler):
+    def get(self):
+        user = User.get_by_auth_token(int(self.request.GET['id']), self.request.authorization[1])
+
+        ret = {
+            "token": self.request.authorization[1],
+            "user": {
+                "name": user[0].name,
+                "email": user[0].email,
+                "verified": user[0].verified,
+                "id": self.request.GET['id']
+            }
+        }
+
+        self.response.headers['Content-Type'] = 'application/json'
+        self.response.set_status(200)
+        return json.dumps(ret)
 
 class CreateUserHandler(BaseHandler):
     def get(self):
@@ -145,21 +199,31 @@ class CreateUserHandler(BaseHandler):
         username = jsonobject['email']
         password = jsonobject['password']
         name = jsonobject['name']
+        unique_properties = ['email']
 
         # Passing password_raw=password so password will be hashed
         # Returns a tuple, where first value is BOOL. If True ok, If False no new user is created
-        success, info = self.auth.store.user_model.create_user(username, password_raw=password, name=name, email=username)
+        success, info = self.user_model.create_user(username, unique_properties, password_raw=password, name=name,
+                                                    email=username, verified=False)
         if success:
             # User is created, Redirection is occurring on UI side
             try:
                 #Grabbing the user session
                 user = self.auth.store.user_to_dict(info)
                 self.auth.set_session(user, remember=True)
+
+                user_id = info.get_id()
+                token = self.user_model.create_signup_token(user_id)
+                verification_url = self.uri_for('verification', type='v', user_id=user_id,
+                                                signup_token=token, _full=True)
+
+                self.send_verification_email(user, verification_url)
                 ret = {
                     "token": user['token'],
                     "user": {
                         "name": user['name'],
-                        "email": username
+                        "email": username,
+                        "verified": user['verified']
                     }
                 }
                 self.response.headers['Content-Type'] = 'application/json'
@@ -169,6 +233,54 @@ class CreateUserHandler(BaseHandler):
                 self.abort(403)
         else:
             return info # Error message
+
+
+class VerificationHandler(BaseHandler):
+    def get(self, *args, **kwargs):
+        user = None
+        user_id = kwargs['user_id']
+        signup_token = kwargs['signup_token']
+        verification_type = kwargs['type']
+
+        # it should be something more concise like
+        # self.auth.get_user_by_token(user_id, signup_token)
+        # unfortunately the auth interface does not (yet) allow to manipulate
+        # signup tokens concisely
+        user, ts = self.user_model.get_by_auth_token(int(user_id), signup_token,
+                                                     'signup')
+
+        if not user:
+            logging.info('Could not find any user with id "%s" signup token "%s"',
+                         user_id, signup_token)
+            self.abort(404)
+
+        # store user data in the session
+        self.auth.set_session(self.auth.store.user_to_dict(user), remember=True)
+
+        if verification_type == 'v':
+            # remove signup token, we don't want users to come back with an old link
+            self.user_model.delete_signup_token(user.get_id(), signup_token)
+
+            if not user.verified:
+                user.verified = True
+                user.put()
+                leaderboard = Leaderboard(user=user.key, wins=0, losses=0)
+                leaderboard.put()
+
+            self.redirect('/')
+            # self.display_message('User email address has been verified.')
+            return
+        elif verification_type == 'p':
+            # supply user to the page
+            params = {
+                'user': user,
+                'token': signup_token
+            }
+            self.redirect('/')
+            # self.render_template('resetpassword.html', params)
+        else:
+            logging.info('verification type not supported')
+            self.abort(404)
 
 class LogoutHandler(BaseHandler):
     """
@@ -231,7 +343,9 @@ class MainEntry(BaseHandler):
 app = webapp2.WSGIApplication([
     ('/', MainEntry),
     webapp2.Route(r'/login', handler=LoginHandler, name='login'),
+    webapp2.Route(r'/account', handler=AccountHandler, name='account'),
     webapp2.Route(r'/logout', handler=LogoutHandler, name='logout'),
+    webapp2.Route(r'/<type:v|p>/<user_id:\d+>-<signup_token:.+>', handler=VerificationHandler, name='verification'),
     webapp2.Route(r'/secure', handler=SecureRequestHandler, name='secure'),
     webapp2.Route(r'/signup', handler=CreateUserHandler, name='create-user'),
     ('/crons/send_reminder', SendReminderEmail),

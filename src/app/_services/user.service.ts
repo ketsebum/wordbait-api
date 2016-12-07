@@ -23,25 +23,28 @@ export class UserService {
   getUser(): User {
     let user = localStorage.getItem('currentUser') ? JSON.parse(localStorage.getItem('currentUser')).user : false;
     if(user) {
-      this.user = user;
-      this.loggedIn.next(user);
+      if(user.verified) {
+          this.user = user;
+          this.loggedIn.next(user);
+      } else {
+          this.user = user;
+          this.loggedIn.next(user);
+          this.getUserService(user).subscribe(user => localStorage.setItem('currentUser', JSON.stringify(user)));
+      }
     } else {
-      console.log("Not Logged In");
-      // this.getUserService()
-      //   .subscribe(user => {
-      //   this.user = user;
-      // });
+        // this.getUserService().subscribe(user => this.user = user);
     }
     return this.user;
   }
 
-  getUserService(): Observable<User> {
+  getUserService(user: User): Observable<User> {
     // add authorization header with jwt token
-    let headers = new Headers({ 'Authorization': 'Bearer ' + this.authenticationService.token });
+    let headers = new Headers({ 'Authorization': 'Bearer ' + this.authenticationService.token});
     let options = new RequestOptions({ headers: headers });
+    let url = '/account?id=' + user.id;
 
     // get users from api
-    return this.http.get('/account', options)
+    return this.http.get(url, options)
         .map((response: Response) => response.json());
   }
 

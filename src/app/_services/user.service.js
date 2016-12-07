@@ -24,20 +24,27 @@ var UserService = (function () {
     UserService.prototype.getUser = function () {
         var user = localStorage.getItem('currentUser') ? JSON.parse(localStorage.getItem('currentUser')).user : false;
         if (user) {
-            this.user = user;
-            this.loggedIn.next(user);
+            if (user.verified) {
+                this.user = user;
+                this.loggedIn.next(user);
+            }
+            else {
+                this.user = user;
+                this.loggedIn.next(user);
+                this.getUserService(user).subscribe(function (user) { return localStorage.setItem('currentUser', JSON.stringify(user)); });
+            }
         }
         else {
-            console.log("Not Logged In");
         }
         return this.user;
     };
-    UserService.prototype.getUserService = function () {
+    UserService.prototype.getUserService = function (user) {
         // add authorization header with jwt token
         var headers = new http_1.Headers({ 'Authorization': 'Bearer ' + this.authenticationService.token });
         var options = new http_1.RequestOptions({ headers: headers });
+        var url = '/account?id=' + user.id;
         // get users from api
-        return this.http.get('/account', options)
+        return this.http.get(url, options)
             .map(function (response) { return response.json(); });
     };
     UserService.prototype.getUsersService = function () {

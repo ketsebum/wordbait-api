@@ -29,10 +29,10 @@ var ViewGameComponent = (function () {
         };
         this.user = userService.getUser();
     }
-    ViewGameComponent.prototype.makeMove = function () {
+    ViewGameComponent.prototype.makeMove = function (guess) {
         this.move.user_name = this.user.email;
         this.move.urlsafe_key = this.game.urlsafe_key;
-        this.move.final_guess = false;
+        this.move.final_guess = guess;
         this.gameService.makeMove(this.move);
     };
     ViewGameComponent.prototype.ngOnInit = function () {

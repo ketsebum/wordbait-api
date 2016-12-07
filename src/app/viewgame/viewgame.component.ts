@@ -30,10 +30,10 @@ export class ViewGameComponent implements OnInit {
         this.user = userService.getUser()
     }
 
-    makeMove() {
+    makeMove(guess: boolean) {
         this.move.user_name = this.user.email;
         this.move.urlsafe_key = this.game.urlsafe_key;
-        this.move.final_guess = false;
+        this.move.final_guess = guess;
         this.gameService.makeMove(this.move);
     }
 

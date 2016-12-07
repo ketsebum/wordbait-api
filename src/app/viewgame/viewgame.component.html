@@ -9,14 +9,14 @@
                 <h3 *ngIf="game.bait==''">No Bait!</h3>
                 <br>
                 <br>
-                <form (ngSubmit)="makeMove()">
+                <form (ngSubmit)="makeMove(false)">
                     <div class="form-group">
                         <label for="newWord">Your Input:</label>
                         <input id="newWord" name="word" type="text" [(ngModel)]="move.word" />
                     </div>
                     <div class="form-group">
-                        <button class="btn btn-primary">Submit New Word</button>
-                        <button *ngIf="game.bait==''" class="btn btn-danger">Submit Guess</button>
+                        <button type="button" (click)="makeMove(false)" class="btn btn-primary">Submit New Word</button>
+                        <button type="button" (click)="makeMove(true)" *ngIf="game.bait!=''" class="btn btn-danger">Submit Guess</button>
                     </div>
                 </form>
             </div>
