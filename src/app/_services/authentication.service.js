@@ -10,11 +10,13 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 var core_1 = require('@angular/core');
 var http_1 = require('@angular/http');
+var index_1 = require('../_models/index');
 require('rxjs/add/operator/map');
 require('rxjs/add/operator/share');
 var AuthenticationService = (function () {
     function AuthenticationService(http) {
         this.http = http;
+        this.object = {};
         // set token if saved in local storage
         var currentUser = JSON.parse(localStorage.getItem('currentUser'));
         this.token = currentUser && currentUser.token;
@@ -44,11 +46,40 @@ var AuthenticationService = (function () {
             }
         });
     };
+    AuthenticationService.prototype.googleSignIn = function (googleUser) {
+        var _this = this;
+        var signUpURL = '/signup';
+        // let body = JSON.stringify({name: name, email: email, password: password});
+        var headers = new http_1.Headers({ 'Content-Type': 'application/json' });
+        var options = new http_1.RequestOptions({ headers: headers });
+        this.object.user = new index_1.User();
+        (function (u, p) {
+            u.id = p.getId();
+            u.name = p.getName();
+            u.email = p.getEmail();
+            // u.imageUrl      = p.getImageUrl();
+            // u.givenName     = p.getGivenName();
+            // u.familyName    = p.getFamilyName();
+        })(this.object.user, googleUser.getBasicProfile());
+        (function (u, r) {
+            u.token = r.id_token;
+        })(this.object, googleUser.getAuthResponse());
+        this.object.google = true;
+        // user.save();
+        // localStorage.setItem('currentUser', JSON.stringify(this.object));
+        var body = JSON.stringify(this.object);
+        return this.http.post(signUpURL, body, options)
+            .map(function (response) {
+            // login successful if there's a jwt token in the response
+            localStorage.setItem('currentUser', JSON.stringify(_this.object));
+            return true;
+        });
+    };
     AuthenticationService.prototype.signup = function (name, email, password) {
         var _this = this;
         //Setting the Login Parameters
         var signUpURL = '/signup';
-        var body = JSON.stringify({ name: name, email: email, password: password });
+        var body = JSON.stringify({ name: name, email: email, password: password, google: false });
         var headers = new http_1.Headers({ 'Content-Type': 'application/json' });
         var options = new http_1.RequestOptions({ headers: headers });
         return this.http.post(signUpURL, body, options)

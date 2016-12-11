@@ -1,7 +1,6 @@
 import {Component, OnInit, EventEmitter, Output} from '@angular/core';
 import {Router} from '@angular/router';
 
-import { User } from '../_models/index';
 import {AuthenticationService} from '../_services/index';
 
 @Component({
@@ -44,31 +43,17 @@ export class LoginComponent implements OnInit {
             'height': 50,
             'longtitle': true,
             'theme': 'light',
-            'onsuccess': param => this.onSignIn(param)
+            'onsuccess': param => this.authenticationService.googleSignIn(param)
+                .subscribe(result => {
+                if (result === true) {
+                    this.loggingIn.emit(true);
+                    this.router.navigate(['/']);
+                } else {
+                    this.error = 'Username or password is incorrect';
+                    this.loading = false;
+                }
+            })
         });
-    }
-
-    onSignIn(googleUser) {
-        let user : User = new User();
-        this.object.user = new User();
-
-        ((u, p) => {
-            u.id            = p.getId();
-            u.name          = p.getName();
-            u.email         = p.getEmail();
-            // u.imageUrl      = p.getImageUrl();
-            // u.givenName     = p.getGivenName();
-            // u.familyName    = p.getFamilyName();
-        })(this.object.user, googleUser.getBasicProfile());
-
-        ((u, r) => {
-            u.token         = r.id_token
-        })(this.object, googleUser.getAuthResponse());
-
-        // user.save();
-        localStorage.setItem('currentUser', JSON.stringify(this.object));
-        // this.loggingIn.emit(true);
-        this.router.navigate(['/']);
     }
 
     signUp() {

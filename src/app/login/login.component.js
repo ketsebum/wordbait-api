@@ -10,8 +10,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 var core_1 = require('@angular/core');
 var router_1 = require('@angular/router');
-var index_1 = require('../_models/index');
-var index_2 = require('../_services/index');
+var index_1 = require('../_services/index');
 var LoginComponent = (function () {
     function LoginComponent(router, authenticationService) {
         this.router = router;
@@ -44,27 +43,18 @@ var LoginComponent = (function () {
             'height': 50,
             'longtitle': true,
             'theme': 'light',
-            'onsuccess': function (param) { return _this.onSignIn(param); }
+            'onsuccess': function (param) { return _this.authenticationService.googleSignIn(param)
+                .subscribe(function (result) {
+                if (result === true) {
+                    _this.loggingIn.emit(true);
+                    _this.router.navigate(['/']);
+                }
+                else {
+                    _this.error = 'Username or password is incorrect';
+                    _this.loading = false;
+                }
+            }); }
         });
-    };
-    LoginComponent.prototype.onSignIn = function (googleUser) {
-        var user = new index_1.User();
-        this.object.user = new index_1.User();
-        (function (u, p) {
-            u.id = p.getId();
-            u.name = p.getName();
-            u.email = p.getEmail();
-            // u.imageUrl      = p.getImageUrl();
-            // u.givenName     = p.getGivenName();
-            // u.familyName    = p.getFamilyName();
-        })(this.object.user, googleUser.getBasicProfile());
-        (function (u, r) {
-            u.token = r.id_token;
-        })(this.object, googleUser.getAuthResponse());
-        // user.save();
-        localStorage.setItem('currentUser', JSON.stringify(this.object));
-        // this.loggingIn.emit(true);
-        this.router.navigate(['/']);
     };
     LoginComponent.prototype.signUp = function () {
         this.router.navigate(['/signup']);
@@ -92,7 +82,7 @@ var LoginComponent = (function () {
         core_1.Component({
             templateUrl: 'app/login/login.component.html'
         }), 
-        __metadata('design:paramtypes', [router_1.Router, index_2.AuthenticationService])
+        __metadata('design:paramtypes', [router_1.Router, index_1.AuthenticationService])
     ], LoginComponent);
     return LoginComponent;
 }());
