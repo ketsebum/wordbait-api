@@ -57,6 +57,12 @@ gulp.task("resources", function() {
     .pipe(livereload());
 });
 
+gulp.task("systemjs", function() {
+    return gulp.src(["src/systemjs.config.js"])
+        .pipe(gulp.dest("dist"))
+        .pipe(livereload());
+});
+
 
 /**
  * Copy all required Front End libraries into build directory.
@@ -91,5 +97,5 @@ gulp.task('watch', function() {
   gulp.watch('src/**/*.ts', ['compile']);
 });
 
-gulp.task('build', ['compile', 'resources', 'libs', 'sass']);
+gulp.task('build', ['compile', 'resources', 'libs', 'sass', 'systemjs']);
 gulp.task('default', ['build', 'watch']);
