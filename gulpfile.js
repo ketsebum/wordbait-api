@@ -35,6 +35,10 @@ gulp.task('clean', function(cb) {
   return del(["dist"], cb);
 });
 
+gulp.task('cleannpm', function(cb) {
+    return del(["node_modules"], cb);
+});
+
 /**
  * Compile TypeScript sources and create sourcemaps in build directory.
  */
@@ -99,3 +103,4 @@ gulp.task('watch', function() {
 
 gulp.task('build', ['compile', 'resources', 'libs', 'sass', 'systemjs']);
 gulp.task('default', ['build', 'watch']);
+gulp.task('cln', ['clean', 'cleannpm']);
