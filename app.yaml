@@ -37,7 +37,10 @@ handlers:
   script: main.app
   secure: always
 
-- url: /oauth2callback
+- url: /gconnect
+  script: main.app
+
+- url: /gdisconnect
   script: main.app
 
 - url: /
@@ -57,3 +60,7 @@ libraries:
 
 - name: endpoints
   version: latest
+
+env_variables:
+  # Replace with your Firebase project ID.
+  FIREBASE_PROJECT_ID: 'gaming-140419'

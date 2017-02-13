@@ -12,6 +12,13 @@ var core_1 = require('@angular/core');
 var FooterComponent = (function () {
     function FooterComponent() {
     }
+    FooterComponent.prototype.ngOnInit = function () {
+        this.copyRightYear();
+    };
+    FooterComponent.prototype.copyRightYear = function () {
+        var today = new Date();
+        this.year = today.getFullYear();
+    };
     FooterComponent = __decorate([
         core_1.Component({
             selector: 'footercomponent',

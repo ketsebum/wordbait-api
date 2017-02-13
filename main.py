@@ -16,6 +16,7 @@ from googleapiclient import discovery
 from oauth2client import client
 from oauth2client.contrib import appengine
 from google.appengine.api import memcache
+from oauth2client import client, crypt
 
 import webapp2
 from webapp2_extras import auth
@@ -36,6 +37,7 @@ webapp2_config = {
     'secret_key': 'Im_an_alien'
   }
 }
+CLIENT_ID = '1066114691418-nm0p4krul7jenj0vck20glcrh23nm1lm.apps.googleusercontent.com'
 
 def user_required(handler):
     """
@@ -170,6 +172,19 @@ class LoginHandler(BaseHandler):
 
 class AccountHandler(BaseHandler):
     def get(self):
+        print self.request.authorization[1]
+        if self.request.GET['id'] == 'undefined':
+            self.response.set_status(403)
+            print 'wtf'
+            return json.dumps("{'msg': 'Missing ID or Token'}")
+        if self.request.authorization[1] == 'null':
+            self.response.set_status(403)
+            print 'wtf'
+            return json.dumps("{'msg': 'Missing ID or Token'}")
+        if self.request.authorization[1] == 'undefined':
+            self.response.set_status(403)
+            print 'wtf'
+            return json.dumps("{'msg': 'Missing ID or Token'}")
         user = User.get_by_auth_token(int(self.request.GET['id']), self.request.authorization[1])
 
         ret = {
@@ -181,7 +196,6 @@ class AccountHandler(BaseHandler):
                 "id": self.request.GET['id']
             }
         }
-
         self.response.headers['Content-Type'] = 'application/json'
         self.response.set_status(200)
         return json.dumps(ret)
@@ -194,17 +208,46 @@ class CreateUserHandler(BaseHandler):
               username: Get the username from POST dict
               password: Get the password from POST dict
           """
-        jsonobject = json.loads(self.request.body)
 
-        username = jsonobject['email']
-        password = jsonobject['password']
-        name = jsonobject['name']
-        unique_properties = ['email']
+        jsonobject = json.loads(self.request.body)
+        google = jsonobject['google']
+        if google:
+            token = jsonobject['gtoken']
+            try:
+                idinfo = client.verify_id_token(token, CLIENT_ID)
+
+                # Or, if multiple clients access the backend server:
+                # idinfo = client.verify_id_token(token, None)
+                # if idinfo['aud'] not in [CLIENT_ID_1, CLIENT_ID_2, CLIENT_ID_3]:
+                #    raise crypt.AppIdentityError("Unrecognized client.")
+
+                if idinfo['iss'] not in ['accounts.google.com', 'https://accounts.google.com']:
+                    raise crypt.AppIdentityError("Wrong issuer.")
+
+                    # If auth request is from a G Suite domain:
+                    # if idinfo['hd'] != GSUITE_DOMAIN_NAME:
+                    #    raise crypt.AppIdentityError("Wrong hosted domain.")
+            except crypt.AppIdentityError:
+                print 'fail'
+                # Invalid token
+            userid = idinfo['sub']
+            print idinfo
+            userobject = jsonobject['user']
+            username = userobject['email']
+            name = userobject['name']
+            unique_properties = ['email']
+            success, info = self.user_model.create_user(username, unique_properties, name=name,
+                                                        email=username, verified=False)
+        else:
+            username = jsonobject['email']
+            password = jsonobject['password']
+            name = jsonobject['name']
+            unique_properties = ['email']
+            success, info = self.user_model.create_user(username, unique_properties, password_raw=password, name=name,
+                                                    email=username, verified=False)
 
         # Passing password_raw=password so password will be hashed
         # Returns a tuple, where first value is BOOL. If True ok, If False no new user is created
-        success, info = self.user_model.create_user(username, unique_properties, password_raw=password, name=name,
-                                                    email=username, verified=False)
         if success:
             # User is created, Redirection is occurring on UI side
             try:
@@ -223,7 +266,8 @@ class CreateUserHandler(BaseHandler):
                     "user": {
                         "name": user['name'],
                         "email": username,
-                        "verified": user['verified']
+                        "verified": user['verified'],
+                        "id": user_id
                     }
                 }
                 self.response.headers['Content-Type'] = 'application/json'
@@ -232,7 +276,24 @@ class CreateUserHandler(BaseHandler):
             except (AttributeError, KeyError), e:
                 self.abort(403)
         else:
-            return info # Error message
+            if google:
+                user = self.user_model.get_by_auth_id(username)
+                dictUser = self.auth.store.user_to_dict(user)
+                self.auth.set_session(dictUser, remember=True)
+                ret = {
+                    # "token": user['token'],
+                    "user": {
+                        "name": dictUser['name'],
+                        "email": username,
+                        "verified": dictUser['verified'],
+                        "id": dictUser['user_id']
+                    }
+                }
+                self.response.headers['Content-Type'] = 'application/json'
+                self.response.set_status(200)
+                return json.dumps(ret)
+            else:
+                return info # Error message
 
 
 class VerificationHandler(BaseHandler):

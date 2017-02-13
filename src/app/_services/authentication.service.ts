@@ -53,7 +53,7 @@ export class AuthenticationService {
         this.object.user = new User();
 
         ((u, p) => {
-            u.id = p.getId();
+            u.gid = p.getId();
             u.name = p.getName();
             u.email = p.getEmail();
             // u.imageUrl      = p.getImageUrl();
@@ -62,7 +62,7 @@ export class AuthenticationService {
         })(this.object.user, googleUser.getBasicProfile());
 
         ((u, r) => {
-            u.token = r.id_token
+            u.gtoken = r.id_token
         })(this.object, googleUser.getAuthResponse());
         this.object.google = true;
 
@@ -73,6 +73,8 @@ export class AuthenticationService {
         return this.http.post(signUpURL, body, options)
             .map((response: Response) => {
                 // login successful if there's a jwt token in the response
+                this.object.user.id = response.json().user.id;
+                this.object.token = response.json().token;
                 localStorage.setItem('currentUser', JSON.stringify(this.object));
                 return true;
             });

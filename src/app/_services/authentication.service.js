@@ -54,7 +54,7 @@ var AuthenticationService = (function () {
         var options = new http_1.RequestOptions({ headers: headers });
         this.object.user = new index_1.User();
         (function (u, p) {
-            u.id = p.getId();
+            u.gid = p.getId();
             u.name = p.getName();
             u.email = p.getEmail();
             // u.imageUrl      = p.getImageUrl();
@@ -62,7 +62,7 @@ var AuthenticationService = (function () {
             // u.familyName    = p.getFamilyName();
         })(this.object.user, googleUser.getBasicProfile());
         (function (u, r) {
-            u.token = r.id_token;
+            u.gtoken = r.id_token;
         })(this.object, googleUser.getAuthResponse());
         this.object.google = true;
         // user.save();
@@ -71,6 +71,8 @@ var AuthenticationService = (function () {
         return this.http.post(signUpURL, body, options)
             .map(function (response) {
             // login successful if there's a jwt token in the response
+            _this.object.user.id = response.json().user.id;
+            _this.object.token = response.json().token;
             localStorage.setItem('currentUser', JSON.stringify(_this.object));
             return true;
         });

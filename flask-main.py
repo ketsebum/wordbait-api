@@ -15,116 +15,155 @@
 # [START app]
 import logging
 
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, redirect
+from flask import session as login_session
+from flask import make_response
+import json
+from oauth2client.client import flow_from_clientsecrets
+from oauth2client.client import FlowExchangeError
+import httplib2
 import flask_cors
 from google.appengine.ext import ndb
 import google.auth.transport.requests
 import google.oauth2.id_token
 import requests_toolbelt.adapters.appengine
+import requests
+from models import User, Game, Leaderboard
 
 # Use the App Engine Requests adapter. This makes sure that Requests uses
 # URLFetch.
 requests_toolbelt.adapters.appengine.monkeypatch()
 HTTP_REQUEST = google.auth.transport.requests.Request()
 
+CLIENT_ID = json.loads(
+    open('client_secrets.json', 'r').read())['web']['client_id']
+
 app = Flask(__name__)
 flask_cors.CORS(app)
 
 
-# [START note]
-class Note(ndb.Model):
-    """NDB model class for a user's note.
-    Key is user id from decrypted token.
-    """
-    friendly_id = ndb.StringProperty()
-    message = ndb.TextProperty()
-    created = ndb.DateTimeProperty(auto_now_add=True)
-# [END note]
+@app.route('/gconnect', methods=['POST'])
+def gconnect():
+    # Validate state token
+    if request.args.get('state') != login_session['state']:
+        response = make_response(json.dumps('Invalid state parameter.'), 401)
+        response.headers['Content-Type'] = 'application/json'
+        return response
+    # Obtain authorization code
+    code = request.data
+    try:
+        # Upgrade the authorization code into a credentials object
+        oauth_flow = flow_from_clientsecrets('client_secrets.json', scope='')
+        oauth_flow.redirect_uri = 'postmessage'
+        credentials = oauth_flow.step2_exchange(code)
+    except FlowExchangeError:
+        response = make_response(
+            json.dumps('Failed to upgrade the authorization code.'), 401)
+        response.headers['Content-Type'] = 'application/json'
+        return response
+
+    # Check that the access token is valid.
+    access_token = credentials.access_token
+    url = ('https://www.googleapis.com/oauth2/v1/tokeninfo?access_token=%s'
+           % access_token)
+    h = httplib2.Http()
+    result = json.loads(h.request(url, 'GET')[1])
+    # If there was an error in the access token info, abort.
+    if result.get('error') is not None:
+        response = make_response(json.dumps(result.get('error')), 500)
+        response.headers['Content-Type'] = 'application/json'
+        return response
+
+    # Verify that the access token is used for the intended user.
+    gplus_id = credentials.id_token['sub']
+    if result['user_id'] != gplus_id:
+        response = make_response(
+            json.dumps("Token's user ID doesn't match given user ID."), 401)
+        response.headers['Content-Type'] = 'application/json'
+        return response
+
+    # Verify that the access token is valid for this app.
+    if result['issued_to'] != CLIENT_ID:
+        response = make_response(
+            json.dumps("Token's client ID does not match app's."), 401)
+        print "Token's client ID does not match app's."
+        response.headers['Content-Type'] = 'application/json'
+        return response
+
+    stored_credentials = login_session.get('credentials')
+    stored_gplus_id = login_session.get('gplus_id')
+    if stored_credentials is not None and gplus_id == stored_gplus_id:
+        response = make_response(json.dumps('Current user is already connected.'),
+                                 200)
+        response.headers['Content-Type'] = 'application/json'
+        return response
+
+    # Store the access token in the session for later use.
+    login_session['credentials'] = credentials
+    login_session['gplus_id'] = gplus_id
+
+    # Get user info
+    userinfo_url = "https://www.googleapis.com/oauth2/v1/userinfo"
+    params = {'access_token': credentials.access_token, 'alt': 'json'}
+    answer = requests.get(userinfo_url, params=params)
+
+    data = answer.json()
+    login_session['username'] = data['name']
+    login_session['picture'] = data['picture']
+    login_session['email'] = data['email']
+
+    #Check if the user exists, if they don't create a new one
+    user_id = User.query(User.email == login_session['email']).fetch()
+    if not user_id:
+        user_id = createUser(login_session)
+    login_session['user_id'] = user_id
+
+    output = 'success'
+    return output
+
+def createUser(login_session):
+    newUser = User(name=login_session['username'], email=login_session[
+                   'email'])
+    newUser.put()
+    # session.commit()
+    user = User.query(User.email == login_session['email']).fetch()
+    return user.id
+
+@app.route('/gdisconnect')
+def gdisconnect():
+    print login_session
+    credentials = login_session.get('credentials')
+    if credentials is None:
+ 	print 'Access Token is None'
+        response = make_response(
+            json.dumps('User was not logged in.', 400))
+        response.headers['Content-Type'] = 'application/json'
+        return response
+    	# return render_template('logout.html')
+
+    access_token = credentials.access_token
+    url = 'https://accounts.google.com/o/oauth2/revoke?token=%s' % access_token
+    h = httplib2.Http()
+    result = h.request(url, 'GET')[0]
+
+    #Delete the left over credentials in our python code
+    if result['status'] == '200':
+	del login_session['credentials']
+    	del login_session['gplus_id']
+    	del login_session['username']
+    	del login_session['email']
+    	del login_session['picture']
+        del login_session['user_id']
+    	return redirect("/")
+    else:
+        response = make_response(
+            json.dumps('Failed to revoke token for given user.', 400))
+        response.headers['Content-Type'] = 'application/json'
+        return response
+    	# return render_template('logout.html')
 
 
-# [START query_database]
-def query_database(user_id):
-    """Fetches all notes associated with user_id.
-    Notes are ordered them by date created, with most recent note added
-    first.
-    """
-    ancestor_key = ndb.Key(Note, user_id)
-    query = Note.query(ancestor=ancestor_key).order(-Note.created)
-    notes = query.fetch()
-
-    note_messages = []
-
-    for note in notes:
-        note_messages.append({
-            'friendly_id': note.friendly_id,
-            'message': note.message,
-            'created': note.created
-        })
-
-    return note_messages
-# [END query_database]
-
-
-# [START list_notes]
-@app.route('/notes', methods=['GET'])
-def list_notes():
-    """Returns a list of notes added by the current Firebase user."""
-
-    # Verify Firebase auth.
-    # [START verify_token]
-    id_token = request.headers['Authorization'].split(' ').pop()
-    claims = google.oauth2.id_token.verify_firebase_token(
-        id_token, HTTP_REQUEST)
-    if not claims:
-        return 'Unauthorized', 401
-    # [END verify_token]
-
-    notes = query_database(claims['sub'])
-
-    return jsonify(notes)
-# [END list_notes]
-
-
-# [START add_note]
-@app.route('/notes', methods=['POST', 'PUT'])
-def add_note():
-    """
-    Adds a note to the user's notebook. The request should be in this format:
-        {
-            "message": "note message."
-        }
-    """
-
-    # Verify Firebase auth.
-    id_token = request.headers['Authorization'].split(' ').pop()
-    claims = google.oauth2.id_token.verify_firebase_token(
-        id_token, HTTP_REQUEST)
-    if not claims:
-        return 'Unauthorized', 401
-
-    # [START create_entity]
-    data = request.get_json()
-
-    # Populates note properties according to the model,
-    # with the user ID as the key name.
-    note = Note(
-        parent=ndb.Key(Note, claims['sub']),
-        message=data['message'])
-
-    # Some providers do not provide one of these so either can be used.
-    note.friendly_id = claims.get('name', claims.get('email', 'Unknown'))
-    # [END create_entity]
-
-    # Stores note in database.
-    note.put()
-
-    return 'OK', 200
-# [END add_note]
-
-
-@app.errorhandler(500)
-def server_error(e):
-    # Log the error and stacktrace.
-    logging.exception('An error occurred during a request.')
-    return 'An internal error occurred.', 500
-# [END app]
+if __name__ == "__main__":
+    app.secret_key = 'super_secret_key'
+    app.debug = True
+    app.run(host = '0.0.0.0', port = 8080)
