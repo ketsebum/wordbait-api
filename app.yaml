@@ -37,18 +37,15 @@ handlers:
   script: main.app
   secure: always
 
-- url: /gconnect
+- url: /login/authorized
   script: main.app
-
-- url: /gdisconnect
-  script: main.app
-
-- url: /
-  static_files: dist/index.html
-  upload: dist/index.html
 
 #- url: /
-#  script: main.app
+#  static_files: dist/index.html
+#  upload: dist/index.html
+
+- url: /
+  script: main.app
 
 - url: /(.*)
   static_files: dist/\1
