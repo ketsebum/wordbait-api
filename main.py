@@ -4,18 +4,17 @@
 cronjobs."""
 import logging
 
-from google.appengine.ext import vendor
+# from google.appengine.ext import vendor
 
-vendor.add('lib')
-import httplib2
+# vendor.add('lib')
 
 import os
 import json
 
-from googleapiclient import discovery
-from oauth2client import client
-from oauth2client.contrib import appengine
-from google.appengine.api import memcache
+# from googleapiclient import discovery
+# from oauth2client import client
+# from oauth2client.contrib import appengine
+# from google.appengine.api import memcache
 from oauth2client import client, crypt
 
 import webapp2
@@ -172,19 +171,15 @@ class LoginHandler(BaseHandler):
 
 class AccountHandler(BaseHandler):
     def get(self):
-        print self.request.authorization[1]
         if self.request.GET['id'] == 'undefined':
             self.response.set_status(403)
-            print 'wtf'
-            return json.dumps("{'msg': 'Missing ID or Token'}")
+            return json.dumps("{'msg': 'Missing ID'}")
         if self.request.authorization[1] == 'null':
             self.response.set_status(403)
-            print 'wtf'
-            return json.dumps("{'msg': 'Missing ID or Token'}")
+            return json.dumps("{'msg': 'Missing Token'}")
         if self.request.authorization[1] == 'undefined':
             self.response.set_status(403)
-            print 'wtf'
-            return json.dumps("{'msg': 'Missing ID or Token'}")
+            return json.dumps("{'msg': 'Missing Token'}")
         user = User.get_by_auth_token(int(self.request.GET['id']), self.request.authorization[1])
 
         ret = {
@@ -281,7 +276,7 @@ class CreateUserHandler(BaseHandler):
                 dictUser = self.auth.store.user_to_dict(user)
                 self.auth.set_session(dictUser, remember=True)
                 ret = {
-                    # "token": user['token'],
+                    "token": dictUser['token'],
                     "user": {
                         "name": dictUser['name'],
                         "email": username,
