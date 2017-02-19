@@ -46,7 +46,6 @@ export class AuthenticationService {
 
     googleSignIn(googleUser): Observable<boolean> {
         let signUpURL = '/signup';
-        // let body = JSON.stringify({name: name, email: email, password: password});
         let headers = new Headers({'Content-Type': 'application/json'});
         let options = new RequestOptions({headers: headers});
 
@@ -66,8 +65,6 @@ export class AuthenticationService {
         })(this.object, googleUser.getAuthResponse());
         this.object.google = true;
 
-        // user.save();
-        // localStorage.setItem('currentUser', JSON.stringify(this.object));
         let body = JSON.stringify(this.object);
 
         return this.http.post(signUpURL, body, options)
@@ -75,6 +72,7 @@ export class AuthenticationService {
                 // login successful if there's a jwt token in the response
                 this.object.user.id = response.json().user.id;
                 this.object.token = response.json().token;
+                this.token = response.json().token;
                 localStorage.setItem('currentUser', JSON.stringify(this.object));
                 return true;
             });

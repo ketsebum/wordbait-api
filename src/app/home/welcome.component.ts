@@ -19,7 +19,6 @@ export class WelcomeComponent implements OnInit {
     token: String = JSON.parse(localStorage.getItem('currentUser')).token;
 
     constructor(private userService: UserService, private gameService: GameService, private router: Router) {
-        this.user = userService.getUser();
     }
 
     test() {
@@ -52,6 +51,7 @@ export class WelcomeComponent implements OnInit {
     }
 
     ngOnInit() {
+        this.user = this.userService.getUser();
         this.getGames();
     }
 }
