@@ -1,13 +1,9 @@
-import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { FormsModule }    from '@angular/forms';
+import { NgModule } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 
-// import { BaseRequestOptions } from '@angular/http';
-// import { fakeBackendProvider } from './_helpers/index';
-// import { MockBackend, MockConnection } from '@angular/http/testing';
-
-import { AppComponent }  from './app.component';
+import { AppComponent } from './app.component';
 import { HeaderComponent } from './header/index';
 import { FooterComponent } from './footer/index';
 import { AppRoutingModule } from './app-routing.module';
@@ -19,14 +15,9 @@ import { SignUpComponent } from './signup/index';
 import { NewGameComponent } from './new_game/index';
 import { ViewGameComponent } from './viewgame/index';
 import { WelcomeComponent } from './home/index';
+import { TesterComponent } from './tester/tester.component';
 
 @NgModule({
-  imports: [
-    BrowserModule,
-    FormsModule,
-    HttpModule,
-    AppRoutingModule
-  ],
   declarations: [
     AppComponent,
     LoginComponent,
@@ -35,7 +26,14 @@ import { WelcomeComponent } from './home/index';
     SignUpComponent,
     NewGameComponent,
     ViewGameComponent,
-    WelcomeComponent
+    WelcomeComponent,
+    TesterComponent
+  ],
+  imports: [
+    BrowserModule,
+    FormsModule,
+    HttpModule,
+    AppRoutingModule
   ],
   providers: [
     AuthGuard,

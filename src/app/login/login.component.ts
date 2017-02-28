@@ -4,7 +4,7 @@ import {Router} from '@angular/router';
 import {AuthenticationService} from '../_services/index';
 
 @Component({
-    templateUrl: 'app/login/login.component.html'
+    templateUrl: './login.component.html'
 })
 
 export class LoginComponent implements OnInit {

@@ -5,8 +5,8 @@ import {User, Game} from '../_models/index';
 import {UserService, GameService} from '../_services/index';
 
 @Component({
-    templateUrl: 'app/home/welcome.component.html',
-    styleUrls: ['app/home/welcome.component.css']
+    templateUrl: './welcome.component.html',
+    styleUrls: ['./welcome.component.css']
 })
 
 //TODO: STOP USING EMAILS AS COMPARISON CHANGE TO USING ID
