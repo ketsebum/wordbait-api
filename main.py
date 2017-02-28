@@ -398,12 +398,12 @@ class MainEntry(BaseHandler):
 
 app = webapp2.WSGIApplication([
     ('/', MainEntry),
-    webapp2.Route(r'/login', handler=LoginHandler, name='login'),
-    webapp2.Route(r'/account', handler=AccountHandler, name='account'),
-    webapp2.Route(r'/logout', handler=LogoutHandler, name='logout'),
-    webapp2.Route(r'/<type:v|p>/<user_id:\d+>-<signup_token:.+>', handler=VerificationHandler, name='verification'),
-    webapp2.Route(r'/secure', handler=SecureRequestHandler, name='secure'),
-    webapp2.Route(r'/signup', handler=CreateUserHandler, name='create-user'),
+    webapp2.Route(r'/api/login', handler=LoginHandler, name='login'),
+    webapp2.Route(r'/api/account', handler=AccountHandler, name='account'),
+    webapp2.Route(r'/api/logout', handler=LogoutHandler, name='logout'),
+    webapp2.Route(r'/api/<type:v|p>/<user_id:\d+>-<signup_token:.+>', handler=VerificationHandler, name='verification'),
+    webapp2.Route(r'/api/secure', handler=SecureRequestHandler, name='secure'),
+    webapp2.Route(r'/api/signup', handler=CreateUserHandler, name='create-user'),
     ('/crons/send_reminder', SendReminderEmail),
     ('/tasks/_cache_average_rounds', UpdateAverageMovesRemaining),
 ], debug=True, config=webapp2_config)

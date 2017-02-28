@@ -10,6 +10,8 @@ var uglify = require('gulp-uglify');
 var sourcemaps = require('gulp-sourcemaps');
 var plumber = require('gulp-plumber');
 var livereload = require('gulp-livereload');
+var run = require('gulp-run-command').default;
+var shell = require('gulp-shell');
 
 var del = require("del");
 var tsc = require("gulp-typescript");
@@ -92,11 +94,17 @@ gulp.task("libs", function() {
     .pipe(gulp.dest("dist/lib"));
 });
 
+gulp.task("ngbuild", shell.task([
+    'echo hello',
+    'ng build'
+]));
+
 gulp.task('watch', function() {
   livereload.listen();
-  gulp.watch('src/css/**/*.scss', ['sass']);
-  gulp.watch('src/**/*.html', ['resources']);
-  gulp.watch('src/**/*.ts', ['compile']);
+  gulp.watch('src/css/**/*.scss', ['ngbuild']);
+  gulp.watch('src/**/*.html', ['ngbuild']);
+  gulp.watch('src/**/*.ts', ['ngbuild']);
+  livereload();
 });
 
 gulp.task('build', ['compile', 'resources', 'libs', 'sass', 'systemjs']);

@@ -17,31 +17,25 @@ handlers:
 - url: /crons/send_reminder
   script: main.app
 
-- url: /v/(.*)
+- url: /api/v/(.*)
   script: main.app
 
-- url: /p/(.*)
+- url: /api/p/(.*)
   script: main.app
 
-- url: /login
+- url: /api/login
   script: main.app
   secure: always
 
-- url: /signup
+- url: /api/signup
   script: main.app
 
-- url: /account
+- url: /api/account
   script: main.app
 
-- url: /secure
+- url: /api/secure
   script: main.app
   secure: always
-
-- url: /gconnect
-  script: main.app
-
-- url: /gdisconnect
-  script: main.app
 
 - url: /
   static_files: dist/index.html
