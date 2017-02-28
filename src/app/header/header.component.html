@@ -1,31 +1,30 @@
-<div class="panel panel-primary">
-    <nav class="navbar navbar-default navbar-static-top">
-        <div class="container">
-            <div class="navbar-header">
-                <a href="/" class="navbar-brand">Word Bait</a>
-            </div>
-            <div id="navbar" class="navbar-collapse collapse">
-                <ul class="nav navbar-nav">
-                    <li><a [routerLink]="['/']">Home</a></li>
-                    <li><a href="/contact">Contact</a></li>
-                </ul>
-                <ul *ngIf="loggedIn" class="nav navbar-nav navbar-right">
-                    <li class="dropdown">
-                        <a href="#" data-toggle="dropdown" class="navbar-avatar dropdown-toggle" *ngIf="user">
-                            {{user.name}}<i class="caret"></i>
-                        </a>
-                        <ul class="dropdown-menu">
-                            <li><a href="/account">My Account</a></li>
-                            <li class="divider"></li>
-                            <li><a (click)="logout()" href="#" [routerLink]="['/login']">Logout</a></li>
-                        </ul>
-                    </li>
-                </ul>
-                <ul *ngIf="!loggedIn" class="nav navbar-nav navbar-right">
-                    <li><a href="/login">Log in</a></li>
-                    <li><a [routerLink]="['/signup']">Sign up</a></li>
-                </ul>
-            </div>
-        </div>
-    </nav>
+<div class="container">
+  <nav class="navbar navbar-toggleable-md navbar-light bg-faded">
+    <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div id="navbarSupportedContent" class="navbar-collapse collapse">
+      <a href="/" class="navbar-brand">Word Bait</a>
+      <ul class="navbar-nav">
+          <li><a [routerLink]="['/']" class="nav-link">Home</a></li>
+          <li><a href="/contact" class="nav-link">Contact</a></li>
+      </ul>
+      <ul *ngIf="loggedIn" class="nav navbar-nav navbar-right">
+          <li class="dropdown">
+              <a href="#" data-toggle="dropdown" class="navbar-avatar dropdown-toggle" *ngIf="user">
+                  {{user.name}}<i class="caret"></i>
+              </a>
+              <ul class="dropdown-menu">
+                  <li><a href="/account" class="nav-link">My Account</a></li>
+                  <li class="divider"></li>
+                  <li><a (click)="logout()" href="#" [routerLink]="['/login']" class="nav-link">Logout</a></li>
+              </ul>
+          </li>
+      </ul>
+      <ul *ngIf="!loggedIn" class="navbar-nav">
+          <li><a href="/login" class="nav-link">Log in</a></li>
+          <li><a [routerLink]="['/signup']" class="nav-link">Sign up</a></li>
+      </ul>
+    </div>
+  </nav>
 </div>

@@ -5,7 +5,7 @@ import { AuthenticationService } from '../_services/index';
 import { User } from '../_models/index';
 
 @Component({
-  templateUrl: 'app/signup/signup.component.html'
+  templateUrl: './signup.component.html'
 })
 
 export class SignUpComponent implements OnInit {

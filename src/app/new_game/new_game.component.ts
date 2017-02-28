@@ -8,7 +8,7 @@ import { User } from '../_models/index';
 import {UserService, GameService} from '../_services/index';
 
 @Component({
-    templateUrl: 'app/new_game/new_game.component.html'
+    templateUrl: './new_game.component.html'
 })
 
 export class NewGameComponent implements OnInit {

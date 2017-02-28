@@ -6,8 +6,8 @@ import { UserService } from '../_services/index';
 
 @Component({
   selector: 'headercomponent',
-  templateUrl: 'app/header/header.component.html',
-  styleUrls: ['app/menu.css']
+  templateUrl: './header.component.html',
+  styleUrls: ['../menu.css']
 })
 
 export class HeaderComponent implements OnInit {

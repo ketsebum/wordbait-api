@@ -19,7 +19,7 @@ export class AuthenticationService {
 
     login(email, password): Observable<boolean> {
         //Setting the Login Parameters
-        let loginURL = '/login';
+        let loginURL = '/api/login';
         let body = JSON.stringify({email: email, password: password});
         let headers = new Headers({'Content-Type': 'application/json'});
         let options = new RequestOptions({headers: headers});
@@ -45,7 +45,7 @@ export class AuthenticationService {
     }
 
     googleSignIn(googleUser): Observable<boolean> {
-        let signUpURL = '/signup';
+        let signUpURL = '/api/signup';
         let headers = new Headers({'Content-Type': 'application/json'});
         let options = new RequestOptions({headers: headers});
 
@@ -80,7 +80,7 @@ export class AuthenticationService {
 
     signup(name, email, password): Observable<boolean> {
         //Setting the Login Parameters
-        let signUpURL = '/signup';
+        let signUpURL = '/api/signup';
         let body = JSON.stringify({name: name, email: email, password: password, google: false});
         let headers = new Headers({'Content-Type': 'application/json'});
         let options = new RequestOptions({headers: headers});

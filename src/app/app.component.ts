@@ -1,9 +1,10 @@
 import { Component } from '@angular/core';
 
 @Component({
-    selector: 'pm-app',
-    templateUrl: 'app/app.component.html'
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-    pageTitle: string = 'Word Bait';
+  pageTitle: string = 'Word Bait';
 }
