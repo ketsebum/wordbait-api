@@ -9,8 +9,8 @@ import { User, Game, Move } from '../_models/index';
 import {UserService, GameService} from '../_services/index';
 
 @Component({
-    moduleId: module.id,
-    templateUrl: 'viewgame.component.html'
+    // moduleId: module.id,
+    templateUrl: './viewgame.component.html'
 })
 
 export class ViewGameComponent implements OnInit {
