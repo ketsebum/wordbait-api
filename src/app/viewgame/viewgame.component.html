@@ -2,8 +2,10 @@
     <div class="panel">
         <div class="panel-body">
             <div *ngIf="game">
-                <h2 *ngIf="user.email==game.user_one_email">You are playing against <strong>{{game.user_two}}</strong></h2>
-                <h2 *ngIf="game.user_two_email==user.email">You are playing against <strong>{{game.user_one}}</strong></h2>
+                <h2 *ngIf="user.email==game.user_one_email">You are playing against <strong>{{game.user_two}}</strong>
+                </h2>
+                <h2 *ngIf="game.user_two_email==user.email">You are playing against <strong>{{game.user_one}}</strong>
+                </h2>
                 <br>
                 <h3 *ngIf="game.bait!=''">Current Letters: {{game.bait}}</h3>
                 <h3 *ngIf="game.bait==''">No Bait!</h3>
@@ -12,11 +14,13 @@
                 <form (ngSubmit)="makeMove(false)">
                     <div class="form-group">
                         <label for="newWord">Your Input:</label>
-                        <input id="newWord" name="word" type="text" [(ngModel)]="move.word" />
+                        <input id="newWord" name="word" type="text" [(ngModel)]="move.word"/>
                     </div>
                     <div class="form-group">
                         <button type="button" (click)="makeMove(false)" class="btn btn-primary">Submit New Word</button>
-                        <button type="button" (click)="makeMove(true)" *ngIf="game.bait!=''" class="btn btn-danger">Submit Guess</button>
+                        <button type="button" (click)="makeMove(true)" *ngIf="game.bait!=''" class="btn btn-danger">
+                            Submit Guess
+                        </button>
                     </div>
                 </form>
             </div>

@@ -5,7 +5,7 @@ import 'rxjs/add/operator/switchMap';
 import {Component, OnInit, EventEmitter, Output} from '@angular/core';
 import {ActivatedRoute, Params} from '@angular/router';
 
-import { User, Game, Move } from '../_models/index';
+import {User, Game, Move} from '../_models/index';
 import {UserService, GameService} from '../_services/index';
 
 @Component({

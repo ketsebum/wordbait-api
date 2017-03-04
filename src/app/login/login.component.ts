@@ -1,5 +1,5 @@
 import {Component, OnInit, EventEmitter, Output} from '@angular/core';
-import { FormsModule }  from '@angular/forms';
+import {FormsModule}  from '@angular/forms';
 import {Router} from '@angular/router';
 
 import {AuthenticationService} from '../_services/index';
@@ -46,14 +46,14 @@ export class LoginComponent implements OnInit {
             'theme': 'light',
             'onsuccess': param => this.authenticationService.googleSignIn(param)
                 .subscribe(result => {
-                if (result === true) {
-                    this.loggingIn.emit(true);
-                    this.router.navigate(['/']);
-                } else {
-                    this.error = 'Username or password is incorrect';
-                    this.loading = false;
-                }
-            })
+                    if (result === true) {
+                        this.loggingIn.emit(true);
+                        this.router.navigate(['/']);
+                    } else {
+                        this.error = 'Username or password is incorrect';
+                        this.loading = false;
+                    }
+                })
         });
     }
 

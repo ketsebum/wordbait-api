@@ -1,8 +1,8 @@
 //NO LONGER IN USE
 //PLANNING TO REMOVE SOON
 
-import { Http, BaseRequestOptions, Response, ResponseOptions, RequestMethod } from '@angular/http';
-import { MockBackend, MockConnection } from '@angular/http/testing';
+import {Http, BaseRequestOptions, Response, ResponseOptions, RequestMethod} from '@angular/http';
+import {MockBackend, MockConnection} from '@angular/http/testing';
 
 export let fakeBackendProvider = {
     // use fake backend in place of Http service for backend-less development
@@ -10,7 +10,7 @@ export let fakeBackendProvider = {
     useFactory: (backend, options) => {
         // configure fake backend
         backend.connections.subscribe((connection: MockConnection) => {
-            let testUser = { username: 'test', password: 'test', firstName: 'Test', lastName: 'User' };
+            let testUser = {username: 'test', password: 'test', firstName: 'Test', lastName: 'User'};
 
             // wrap in timeout to simulate server api call
             setTimeout(() => {
@@ -23,11 +23,11 @@ export let fakeBackendProvider = {
                     // check user credentials and return fake jwt token if valid
                     if (params.username === testUser.username && params.password === testUser.password) {
                         connection.mockRespond(new Response(
-                            new ResponseOptions({ status: 200, body: { token: 'fake-jwt-token' } })
+                            new ResponseOptions({status: 200, body: {token: 'fake-jwt-token'}})
                         ));
                     } else {
                         connection.mockRespond(new Response(
-                            new ResponseOptions({ status: 200 })
+                            new ResponseOptions({status: 200})
                         ));
                     }
                 }
@@ -38,12 +38,12 @@ export let fakeBackendProvider = {
                     // in a real application
                     if (connection.request.headers.get('Authorization') === 'Bearer fake-jwt-token') {
                         connection.mockRespond(new Response(
-                            new ResponseOptions({ status: 200, body: [testUser] })
+                            new ResponseOptions({status: 200, body: [testUser]})
                         ));
                     } else {
                         // return 401 not authorised if token is null or invalid
                         connection.mockRespond(new Response(
-                            new ResponseOptions({ status: 401 })
+                            new ResponseOptions({status: 401})
                         ));
                     }
                 }

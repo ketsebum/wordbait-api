@@ -24,7 +24,7 @@ export class UserService {
 
     getUser(): User {
         let user = localStorage.getItem('currentUser') ? JSON.parse(localStorage.getItem('currentUser')).user : false;
-        if (user!==undefined) {
+        if (user !== undefined) {
             if (user.verified) {
                 this.user = user;
                 this.loggedIn.next(user);
@@ -60,8 +60,8 @@ export class UserService {
         // get users from api
         return this.http.get(this.apiURL + this.allURL, options)
             .toPromise();
-            // .then(response => response.json().items)
-            // .catch();
+        // .then(response => response.json().items)
+        // .catch();
     }
 
     private handleError(error: any): Promise<any> {

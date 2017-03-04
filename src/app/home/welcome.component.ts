@@ -39,7 +39,7 @@ export class WelcomeComponent implements OnInit {
     }
 
     updateGame(update: Game) {
-        for(let i = 0, l = this.games.length; i < l; i++) {
+        for (let i = 0, l = this.games.length; i < l; i++) {
             if (this.games[i].urlsafe_key === update.urlsafe_key) this.games[i].confirmed = true;
         }
     }

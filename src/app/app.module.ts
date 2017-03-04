@@ -9,7 +9,7 @@ import { FooterComponent } from './footer/index';
 import { AppRoutingModule } from './app-routing.module';
 
 import { AuthGuard } from './_guards/index';
-import { AuthenticationService, UserService, GameService } from './_services/index';
+import {AuthenticationService, UserService, GameService } from './_services/index';
 import { LoginComponent } from './login/index';
 import { SignUpComponent } from './signup/index';
 import { NewGameComponent } from './new_game/index';
