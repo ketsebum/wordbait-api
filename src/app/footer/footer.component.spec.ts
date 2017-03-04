@@ -31,7 +31,7 @@ describe('FooterComponent', () => {
         expect(app.year).toBeTruthy();
     });
 
-    it('should have be this year', () => {
+    it('should have be year', () => {
         const app = fixture.debugElement.componentInstance;
         let today = new Date();
         expect(app.year === today.getFullYear()).toBeTruthy();

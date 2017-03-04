@@ -41,7 +41,7 @@ export class UserService {
         // add authorization header with jwt token
         let headers = new Headers({'Authorization': 'Bearer ' + this.authenticationService.token});
         let options = new RequestOptions({headers: headers});
-        let url = '/account?id=' + user.id;
+        let url = '/api/account?id=' + user.id;
 
         // get users from api
         return this.http.get(url, options)
