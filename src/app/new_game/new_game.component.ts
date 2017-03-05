@@ -18,12 +18,11 @@ export class NewGameComponent implements OnInit {
     constructor(private router: Router,
                 private userService: UserService,
                 private gameService: GameService) {
-        this.users = userService.getUsersService();
-        this.user = userService.getUser();
     }
 
     ngOnInit() {
-
+        this.users = this.userService.getUsersService();
+        this.user = this.userService.getUser();
     }
 
     createGame() {
@@ -35,7 +34,6 @@ export class NewGameComponent implements OnInit {
                 }
                 this.router.navigate(['/']);
             });
-        // this.router.navigate(['/']);
     }
 
 }

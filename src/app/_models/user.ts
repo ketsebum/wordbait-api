@@ -1,8 +1,8 @@
 export class User {
     gid: number;
+    token: string;
     id: number;
     email: string;
     name: string;
-    token: string;
     verified: boolean;
 }

@@ -151,7 +151,7 @@ class LoginHandler(BaseHandler):
             user = self.auth.get_user_by_password(username, password)
             ret = {
                 "token": user['token'],
-                "user" : {
+                "info" : {
                     "name": user['name'],
                     "email": username,
                     "verified": user['verified'],
@@ -184,12 +184,10 @@ class AccountHandler(BaseHandler):
 
         ret = {
             "token": self.request.authorization[1],
-            "user": {
-                "name": user[0].name,
-                "email": user[0].email,
-                "verified": user[0].verified,
-                "id": self.request.GET['id']
-            }
+            "name": user[0].name,
+            "email": user[0].email,
+            "verified": user[0].verified,
+            "id": self.request.GET['id']
         }
         self.response.headers['Content-Type'] = 'application/json'
         self.response.set_status(200)
@@ -258,12 +256,10 @@ class CreateUserHandler(BaseHandler):
                 self.send_verification_email(user, verification_url)
                 ret = {
                     "token": user['token'],
-                    "user": {
-                        "name": user['name'],
-                        "email": username,
-                        "verified": user['verified'],
-                        "id": user_id
-                    }
+                    "name": user['name'],
+                    "email": username,
+                    "verified": user['verified'],
+                    "id": user_id
                 }
                 self.response.headers['Content-Type'] = 'application/json'
                 self.response.set_status(200)
@@ -277,12 +273,10 @@ class CreateUserHandler(BaseHandler):
                 self.auth.set_session(dictUser, remember=True)
                 ret = {
                     "token": dictUser['token'],
-                    "user": {
-                        "name": dictUser['name'],
-                        "email": username,
-                        "verified": dictUser['verified'],
-                        "id": dictUser['user_id']
-                    }
+                    "name": dictUser['name'],
+                    "email": username,
+                    "verified": dictUser['verified'],
+                    "id": dictUser['user_id']
                 }
                 self.response.headers['Content-Type'] = 'application/json'
                 self.response.set_status(200)

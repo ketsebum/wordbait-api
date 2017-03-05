@@ -24,19 +24,23 @@ export class UserService {
 
     getUser(): User {
         let user = localStorage.getItem('currentUser') ? JSON.parse(localStorage.getItem('currentUser')).user : false;
-        if (user !== undefined) {
+        console.log(localStorage.getItem('currentUser'));
+        if (user) {
             if (user.verified) {
                 this.user = user;
                 this.loggedIn.next(user);
             } else {
                 this.user = user;
                 this.loggedIn.next(user);
-                this.getUserService(user).then(user => localStorage.setItem('currentUser', JSON.stringify(user)));
+                this.getUserService(user).then(user => {
+                    console.log("SETTING OBJECT FROM GET USER");
+                    console.log(user);
+                    localStorage.setItem('currentUser', JSON.stringify(user))
+                });
             }
         } else {
             // this.getUserService().subscribe(user => this.user = user);
         }
-
         return this.user;
     }
 
@@ -45,10 +49,11 @@ export class UserService {
         let headers = new Headers({'Authorization': 'Bearer ' + this.authenticationService.token});
         let options = new RequestOptions({headers: headers});
 
+        console.log(user);
         // get user from api
         return this.http.get(this.accountURL + user.id, options)
             .toPromise()
-            .then(response => response.json().data as User)
+            .then(response => response.json() as User)
             .catch(this.handleError);
     }
 
@@ -60,8 +65,8 @@ export class UserService {
         // get users from api
         return this.http.get(this.apiURL + this.allURL, options)
             .toPromise();
-        // .then(response => response.json().items)
-        // .catch();
+            // .then(response => response.json().items)
+            // .catch();
     }
 
     private handleError(error: any): Promise<any> {
