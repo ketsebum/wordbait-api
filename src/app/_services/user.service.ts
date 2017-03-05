@@ -36,9 +36,10 @@ export class UserService {
                 });
             }
         } else {
-            // this.getUserService().subscribe(user => this.user = user);
+            // USER LOST CURRENT USER
+            // this.getUserService().then(user => this.user = user);
         }
-        return user;
+        return this.user;
     }
 
     getUserService(user: User): Promise<User> {

@@ -73,7 +73,7 @@ export class AuthenticationService {
                 this.object.user.id = response.json().id;
                 this.object.user.token = response.json().token;
                 this.token = response.json().token;
-                localStorage.setItem('currentUser', JSON.stringify(this.object));
+                localStorage.setItem('currentUser', JSON.stringify(this.object.user));
                 return true;
             });
     }

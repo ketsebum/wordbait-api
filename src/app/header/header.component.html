@@ -18,13 +18,14 @@
                     </a>
                     <div class="dropdown-menu">
                         <a class="dropdown-item" href="/account" >My Account</a>
+                        <div class="dropdown-divider"></div>
                         <a class="dropdown-item" (click)="logout()" href="#" [routerLink]="['/login']">Logout</a>
                     </div>
                 </li>
             </ul>
             <ul *ngIf="!loggedIn" class="navbar-nav">
-                <li><a href="/login" class="nav-item">Log in</a></li>
-                <li><a [routerLink]="['/signup']" class="nav-item">Sign up</a></li>
+                <li class="nav-item"><a class="btn btn-primary" href="/login">Log in</a></li>
+                <li class="nav-item"><a class="btn btn-success" [routerLink]="['/signup']">Sign up</a></li>
             </ul>
         </div>
     </nav>
