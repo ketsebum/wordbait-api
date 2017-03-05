@@ -19,8 +19,8 @@ export class HeaderComponent implements OnInit {
     constructor(private userService: UserService) {
         // this.subscription = userService.currentUser$.subscribe(user => {
             // TODO: DO THIS BETTER
-            // this.user = JSON.parse(localStorage.getItem('currentUser')).user;
-            // this.loggedIn = true;
+            this.user = JSON.parse(localStorage.getItem('currentUser')).user;
+            this.loggedIn = true;
         // });
     }
 
@@ -28,9 +28,9 @@ export class HeaderComponent implements OnInit {
         this.showHamburgerMenu = !this.showHamburgerMenu;
     }
 
-    // updateUser(): void {
-    //     this.user = this.userService.getUser();
-    // }
+    updateUser(): void {
+        this.user = this.userService.getUser();
+    }
 
     logout(): void {
         this.loggedIn = false;
@@ -38,10 +38,10 @@ export class HeaderComponent implements OnInit {
 
     ngOnInit() {
         // this.user = this.userService.getUser();
-        // if (this.user !== undefined) {
-        //     this.loggedIn = true;
-        // } else {
-        //     this.loggedIn = false;
-        // }
+        if (this.user !== undefined) {
+            this.loggedIn = true;
+        } else {
+            this.loggedIn = false;
+        }
     }
 }

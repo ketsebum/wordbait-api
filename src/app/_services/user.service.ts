@@ -23,8 +23,8 @@ export class UserService {
     }
 
     getUser(): User {
-        let user = localStorage.getItem('currentUser') ? JSON.parse(localStorage.getItem('currentUser')).user : false;
-        console.log(localStorage.getItem('currentUser'));
+        let user = localStorage.getItem('currentUser') ? JSON.parse(localStorage.getItem('currentUser')) : false;
+        // console.log(localStorage.getItem('currentUser'));
         if (user) {
             if (user.verified) {
                 this.user = user;
@@ -33,15 +33,16 @@ export class UserService {
                 this.user = user;
                 this.loggedIn.next(user);
                 this.getUserService(user).then(user => {
-                    console.log("SETTING OBJECT FROM GET USER");
-                    console.log(user);
+                    // console.log("SETTING OBJECT FROM GET USER");
+                    // console.log(user);
                     localStorage.setItem('currentUser', JSON.stringify(user))
                 });
             }
         } else {
             // this.getUserService().subscribe(user => this.user = user);
         }
-        return this.user;
+        console.log(user);
+        return user;
     }
 
     getUserService(user: User): Promise<User> {
