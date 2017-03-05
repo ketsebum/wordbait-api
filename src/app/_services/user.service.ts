@@ -24,7 +24,6 @@ export class UserService {
 
     getUser(): User {
         let user = localStorage.getItem('currentUser') ? JSON.parse(localStorage.getItem('currentUser')) : false;
-        // console.log(localStorage.getItem('currentUser'));
         if (user) {
             if (user.verified) {
                 this.user = user;
@@ -33,15 +32,12 @@ export class UserService {
                 this.user = user;
                 this.loggedIn.next(user);
                 this.getUserService(user).then(user => {
-                    // console.log("SETTING OBJECT FROM GET USER");
-                    // console.log(user);
                     localStorage.setItem('currentUser', JSON.stringify(user))
                 });
             }
         } else {
             // this.getUserService().subscribe(user => this.user = user);
         }
-        console.log(user);
         return user;
     }
 
@@ -50,7 +46,6 @@ export class UserService {
         let headers = new Headers({'Authorization': 'Bearer ' + this.authenticationService.token});
         let options = new RequestOptions({headers: headers});
 
-        console.log(user);
         // get user from api
         return this.http.get(this.accountURL + user.id, options)
             .toPromise()

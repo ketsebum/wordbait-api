@@ -51,9 +51,7 @@ export class WelcomeComponent implements OnInit {
     }
 
     ngOnInit() {
-        console.log(this.user);
         this.user = this.userService.getUser();
-        console.log(this.userService.getUser());
-        // this.getGames();
+        this.getGames();
     }
 }
