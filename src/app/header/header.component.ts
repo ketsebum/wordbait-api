@@ -7,7 +7,6 @@ import {UserService} from '../_services/index';
 @Component({
     selector: 'headercomponent',
     templateUrl: './header.component.html',
-    styleUrls: ['../menu.css']
 })
 
 export class HeaderComponent implements OnInit {
