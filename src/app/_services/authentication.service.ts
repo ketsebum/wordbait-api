@@ -51,7 +51,6 @@ export class AuthenticationService {
         let options = new RequestOptions({headers: headers});
 
         this.object.user = new User();
-
         ((u, p) => {
             u.gid = p.getId();
             u.name = p.getName();
