@@ -7,25 +7,24 @@
         </button>
         <div id="navbarSupportedContent" class="navbar-collapse collapse">
             <a href="/" class="navbar-brand">Word Bait</a>
-            <ul class="navbar-nav">
-                <li><a [routerLink]="['/']" class="nav-link">Home</a></li>
-                <li><a href="/contact" class="nav-link">Contact</a></li>
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item"><a [routerLink]="['/']" class="nav-link">Home</a></li>
+                <li class="nav-item"><a href="/contact" class="nav-link">Contact</a></li>
             </ul>
-            <ul *ngIf="loggedIn" class="nav navbar-nav navbar-right">
-                <li class="dropdown">
-                    <a href="#" data-toggle="dropdown" class="navbar-avatar dropdown-toggle" *ngIf="user">
+            <ul *ngIf="loggedIn" class="nav navbar-nav">
+                <li class="nav-item active dropdown">
+                    <a href="#" data-toggle="dropdown" class="nav-link dropdown-toggle" *ngIf="user">
                         {{user.name}}<i class="caret"></i>
                     </a>
-                    <ul class="dropdown-menu">
-                        <li><a href="/account" class="nav-link">My Account</a></li>
-                        <li class="divider"></li>
-                        <li><a (click)="logout()" href="#" [routerLink]="['/login']" class="nav-link">Logout</a></li>
-                    </ul>
+                    <div class="dropdown-menu">
+                        <a class="dropdown-item" href="/account" >My Account</a>
+                        <a class="dropdown-item" (click)="logout()" href="#" [routerLink]="['/login']">Logout</a>
+                    </div>
                 </li>
             </ul>
             <ul *ngIf="!loggedIn" class="navbar-nav">
-                <li><a href="/login" class="nav-link">Log in</a></li>
-                <li><a [routerLink]="['/signup']" class="nav-link">Sign up</a></li>
+                <li><a href="/login" class="nav-item">Log in</a></li>
+                <li><a [routerLink]="['/signup']" class="nav-item">Sign up</a></li>
             </ul>
         </div>
     </nav>
