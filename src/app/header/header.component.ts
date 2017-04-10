@@ -1,5 +1,4 @@
 import {Component, OnInit, ChangeDetectorRef} from '@angular/core';
-import {Subscription}   from 'rxjs/Subscription';
 
 import {User} from '../_models/index';
 import {UserService, AuthenticationService} from '../_services/index';
