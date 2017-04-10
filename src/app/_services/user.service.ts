@@ -2,10 +2,11 @@ import {Injectable} from '@angular/core';
 import {Http, Headers, RequestOptions, Response} from '@angular/http';
 import {Observable} from 'rxjs/Observable';
 import {Subject}    from 'rxjs/Subject';
-import 'rxjs/add/operator/toPromise';
+import 'rxjs/add/operator/catch';
 
 import {AuthenticationService} from './index';
 import {User} from '../_models/index';
+import {ConnectableObservable, Subscription} from "rxjs";
 
 @Injectable()
 export class UserService {
@@ -15,6 +16,9 @@ export class UserService {
     private token: string;
     private loggedIn = new Subject<string>();
     user: User;
+    errorMessage: string;
+    connUser: ConnectableObservable<User>;
+
 
     currentUser$ = this.loggedIn.asObservable();
 
@@ -23,7 +27,10 @@ export class UserService {
     }
 
     getUser(): User {
+        if (this.user) return this.user;
         let user = localStorage.getItem('currentUser') ? JSON.parse(localStorage.getItem('currentUser')) : false;
+
+        // this.connUser.
         if (user) {
             if (user.verified) {
                 this.user = user;
@@ -31,9 +38,12 @@ export class UserService {
             } else {
                 this.user = user;
                 this.loggedIn.next(user);
-                this.getUserService(user).then(user => {
-                    localStorage.setItem('currentUser', JSON.stringify(user))
-                });
+                this.getUserService(user).subscribe(
+                    user => this.user = user,
+                    error => this.errorMessage = <any>error);
+                    // .then(user => {
+                    // localStorage.setItem('currentUser', JSON.stringify(user))
+                // });
             }
         } else {
             // USER LOST CURRENT USER
@@ -42,16 +52,17 @@ export class UserService {
         return this.user;
     }
 
-    getUserService(user: User): Promise<User> {
+    getUserService(user: User): Observable<User> {
         // add authorization header with jwt token
         let headers = new Headers({'Authorization': 'Bearer ' + this.authenticationService.token});
         let options = new RequestOptions({headers: headers});
 
         // get user from api
         return this.http.get(this.accountURL + user.id, options)
-            .toPromise()
-            .then(response => response.json() as User)
+            .map(response => response.json())
             .catch(this.handleError);
+            // .toPromise()
+            // .then(response => response.json() as User)
     }
 
     getUsersService(): Promise<any> {

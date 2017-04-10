@@ -1,8 +1,8 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, ChangeDetectorRef} from '@angular/core';
 import {Subscription}   from 'rxjs/Subscription';
 
 import {User} from '../_models/index';
-import {UserService} from '../_services/index';
+import {UserService, AuthenticationService} from '../_services/index';
 
 @Component({
     selector: 'headercomponent',
@@ -11,37 +11,37 @@ import {UserService} from '../_services/index';
 })
 
 export class HeaderComponent implements OnInit {
-    showHamburgerMenu: boolean = true;
-    loggedIn: boolean = false;
-    subscription: Subscription;
+    loggedIn = false;
     user: User;
 
-    constructor(private userService: UserService) {
-        // this.subscription = userService.currentUser$.subscribe(user => {
-            // TODO: DO THIS BETTER
-            // this.user = JSON.parse(localStorage.getItem('currentUser')).user;
-            // this.loggedIn = true;
-        // });
-    }
-
-    toggleMenu(): void {
-        this.showHamburgerMenu = !this.showHamburgerMenu;
+    constructor(private userService: UserService, private authenticationService: AuthenticationService,
+                private appRef: ChangeDetectorRef) {
     }
 
     updateUser(): void {
         this.user = this.userService.getUser();
+        this.appRef.detectChanges();
     }
 
     logout(): void {
         this.loggedIn = false;
+        this.authenticationService.logout();
     }
 
-    ngOnInit() {
-        this.user = this.userService.getUser();
+    updateLogInStatus(): void {
         if (this.user !== undefined) {
             this.loggedIn = true;
         } else {
             this.loggedIn = false;
         }
+    }
+
+    ngOnInit() {
+        this.updateUser();
+        this.updateLogInStatus();
+        this.authenticationService.loginEvent$.subscribe((loginStatus)=> {
+            this.loggedIn = loginStatus;
+            this.updateUser();
+        });
     }
 }

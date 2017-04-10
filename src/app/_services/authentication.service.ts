@@ -1,6 +1,7 @@
 import {Injectable} from '@angular/core';
 import {Http, Headers, Response, RequestOptions} from '@angular/http';
 import {Observable} from 'rxjs/Observable';
+import {Subject} from 'rxjs/Subject';
 import {User} from '../_models/index';
 
 import 'rxjs/add/operator/map';
@@ -8,6 +9,8 @@ import 'rxjs/add/operator/share';
 
 @Injectable()
 export class AuthenticationService {
+    private loginEvent = new Subject<boolean>();
+    loginEvent$ = this.loginEvent.asObservable();
     public token: string;
     object: any = {};
 
@@ -74,6 +77,7 @@ export class AuthenticationService {
                 this.object.user.token = response.json().token;
                 this.token = response.json().token;
                 localStorage.setItem('currentUser', JSON.stringify(this.object.user));
+                this.loginEvent.next(true);
                 return true;
             });
     }
