@@ -42,6 +42,7 @@ export class ViewGameComponent implements OnInit {
 
     ngOnInit() {
         this.user = this.userService.getUser();
+
         this.route.params
             .switchMap((params: Params) => this.gameService.getGame(params['id']))
             .subscribe(game => this.game = game);

@@ -15,7 +15,6 @@ export class WelcomeComponent implements OnInit {
     users: User[] = [];
     user: User;
     games: Game[];
-    selectedGame: Game;
     token: String = JSON.parse(localStorage.getItem('currentUser')).token;
 
     constructor(private userService: UserService,
@@ -51,6 +50,9 @@ export class WelcomeComponent implements OnInit {
 
     ngOnInit() {
         this.user = this.userService.getUser();
+        this.gameService.gameCreation$.subscribe(
+            (new_game) => this.games.push(new_game)
+        );
         this.getGames();
     }
 }

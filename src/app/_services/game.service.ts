@@ -3,6 +3,7 @@
  */
 import { Injectable }    from '@angular/core';
 import { Headers, Http } from '@angular/http';
+import {Subject} from 'rxjs/Subject';
 import 'rxjs/add/operator/toPromise';
 
 import {Game, Move} from '../_models/index';
@@ -16,6 +17,12 @@ export class GameService {
     private gameURL = 'game/';
     private moveURL = 'move';
     private confirmURL = 'confirm/';
+
+    //Call next on private to update status
+    //Subscribe to public outside
+    private gameCreation = new Subject<Game>();
+    gameCreation$ = this.gameCreation.asObservable();
+
     constructor(private http: Http) { }
     getGames(): Promise<Game[]> {
         return this.http.get(this.apiURL + this.gamesURL)
@@ -45,7 +52,10 @@ export class GameService {
         const url = this.apiURL + this.gameURL;
         return this.http.post(url, JSON.stringify({user_name: name}), {headers: this.headers})
             .toPromise()
-            .then(response => response.json())
+            .then(response => {
+                this.gameCreation.next(response.json());
+                return response.json();
+            })
             .catch(this.handleError);
     }
     makeMove(move: Move): Promise<Game> {
