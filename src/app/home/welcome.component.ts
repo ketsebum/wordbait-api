@@ -18,7 +18,9 @@ export class WelcomeComponent implements OnInit {
     selectedGame: Game;
     token: String = JSON.parse(localStorage.getItem('currentUser')).token;
 
-    constructor(private userService: UserService, private gameService: GameService, private router: Router) {
+    constructor(private userService: UserService,
+                private gameService: GameService,
+                private router: Router) {
     }
 
     test() {
