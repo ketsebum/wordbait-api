@@ -23,9 +23,6 @@ export class WelcomeComponent implements OnInit {
                 private router: Router) {
     }
 
-    test() {
-    }
-
     newGame() {
         this.router.navigate(['/newgame']);
     }
