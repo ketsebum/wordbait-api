@@ -13,14 +13,14 @@ export class UserService {
     private apiURL = '/_ah/api/word_bait/v1/';  // URL to web api
     private allURL = 'all/users';  // URL to web api
     private accountURL = '/api/account?id=';
-    private token: string;
-    private loggedIn = new Subject<string>();
+
     user: User;
     errorMessage: string;
-    connUser: ConnectableObservable<User>;
 
-
-    currentUser$ = this.loggedIn.asObservable();
+    //Call next on private to update status
+    //Subscribe to public outside
+    private currentUser = new Subject<User>();
+    currentUser$ = this.currentUser.asObservable();
 
     constructor(private http: Http,
                 private authenticationService: AuthenticationService) {
@@ -34,18 +34,21 @@ export class UserService {
         if (user) {
             if (user.verified) {
                 this.user = user;
-                this.loggedIn.next(user);
+                // this.currentUser.next(user);
             } else {
                 this.user = user;
-                this.loggedIn.next(user);
                 this.getUserService(user).subscribe(
-                    user => this.user = user,
+                    user => {
+                        this.user = user;
+
+                        //TODO: Evaluate Emitting User might not be needed
+                        this.currentUser.next(this.user);
+                        localStorage.setItem('currentUser', JSON.stringify(user))
+                    },
                     error => this.errorMessage = <any>error);
-                    // .then(user => {
-                    // localStorage.setItem('currentUser', JSON.stringify(user))
-                // });
             }
         } else {
+            // TODO: Evaluate this condition
             // USER LOST CURRENT USER
             // this.getUserService().then(user => this.user = user);
         }

@@ -44,7 +44,4 @@ import { TesterComponent } from './tester/tester.component';
   bootstrap: [AppComponent]
 })
 export class AppModule {
-  loggingIn(loggedIn: boolean) {
-    console.log(loggedIn);
-  }
 }

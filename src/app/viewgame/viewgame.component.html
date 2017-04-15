@@ -1,6 +1,6 @@
-<div class="col-md-6 col-md-offset-3">
-    <div class="panel">
-        <div class="panel-body">
+<div class="container">
+    <div class="card">
+        <div class="card-block">
             <div *ngIf="game">
                 <h2 *ngIf="user.email==game.user_one_email">You are playing against <strong>{{game.user_two}}</strong>
                 </h2>
@@ -11,7 +11,7 @@
                 <h3 *ngIf="game.bait==''">No Bait!</h3>
                 <br>
                 <br>
-                <form (ngSubmit)="makeMove(false)">
+                <form *ngIf="game.turn==user.email" (ngSubmit)="makeMove(false)">
                     <div class="form-group">
                         <label for="newWord">Your Input:</label>
                         <input id="newWord" name="word" type="text" [(ngModel)]="move.word"/>
@@ -23,6 +23,11 @@
                         </button>
                     </div>
                 </form>
+                <div *ngIf="game.turn!=user.email">
+                    <h3>
+                        Not your turn yet!
+                    </h3>
+                </div>
             </div>
         </div>
     </div>

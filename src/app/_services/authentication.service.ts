@@ -9,10 +9,13 @@ import 'rxjs/add/operator/share';
 
 @Injectable()
 export class AuthenticationService {
-    private loginEvent = new Subject<boolean>();
-    loginEvent$ = this.loginEvent.asObservable();
     public token: string;
     object: any = {};
+
+    //Call next on private to update status
+    //Subscribe to public outside
+    private loginEvent = new Subject<boolean>();
+    loginEvent$ = this.loginEvent.asObservable();
 
     constructor(private http: Http) {
         // set token if saved in local storage
@@ -75,6 +78,7 @@ export class AuthenticationService {
                 // login successful if there's a jwt token in the response
                 this.object.user.id = response.json().id;
                 this.object.user.token = response.json().token;
+                this.object.user.verified = response.json().verified;
                 this.token = response.json().token;
                 localStorage.setItem('currentUser', JSON.stringify(this.object.user));
                 this.loginEvent.next(true);

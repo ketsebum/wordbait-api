@@ -9,7 +9,6 @@ import {AuthenticationService} from '../_services/index';
 })
 
 export class LoginComponent implements OnInit {
-    @Output() loggingIn = new EventEmitter<boolean>();
     model: any = {};
     object: any = {};
     loading = false;
@@ -47,7 +46,6 @@ export class LoginComponent implements OnInit {
             'onsuccess': param => this.authenticationService.googleSignIn(param)
                 .subscribe(result => {
                     if (result === true) {
-                        this.loggingIn.emit(true);
                         this.router.navigate(['/']);
                     } else {
                         this.error = 'Username or password is incorrect';
@@ -67,7 +65,6 @@ export class LoginComponent implements OnInit {
         this.authenticationService.login(this.model.username, this.model.password)
             .subscribe(result => {
                 if (result === true) {
-                    this.loggingIn.emit(true);
                     this.router.navigate(['/']);
                 } else {
                     this.error = 'Username or password is incorrect';

@@ -2,8 +2,8 @@
  * Created by ketse on 12/2/16.
  */
 import 'rxjs/add/operator/switchMap';
-import {Component, OnInit, EventEmitter, Output} from '@angular/core';
-import {ActivatedRoute, Params} from '@angular/router';
+import {Component, OnInit} from '@angular/core';
+import {ActivatedRoute, Params, Router} from '@angular/router';
 
 import {User, Game, Move} from '../_models/index';
 import {UserService, GameService} from '../_services/index';
@@ -26,14 +26,18 @@ export class ViewGameComponent implements OnInit {
 
     constructor(private route: ActivatedRoute,
                 private userService: UserService,
-                private gameService: GameService) {
+                private gameService: GameService,
+                private router: Router) {
     }
 
     makeMove(guess: boolean) {
         this.move.user_name = this.user.email;
         this.move.urlsafe_key = this.game.urlsafe_key;
         this.move.final_guess = guess;
-        this.gameService.makeMove(this.move);
+        this.gameService.makeMove(this.move).then(
+            () => this.router.navigate(['/'])
+        );
+
     }
 
     ngOnInit() {
