@@ -253,6 +253,7 @@ class CreateUserHandler(BaseHandler):
                 verification_url = self.uri_for('verification', type='v', user_id=user_id,
                                                 signup_token=token, _full=True)
 
+                print verification_url
                 self.send_verification_email(user, verification_url)
                 ret = {
                     "token": user['token'],
