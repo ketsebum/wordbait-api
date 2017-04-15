@@ -22,6 +22,7 @@ export class NewGameComponent implements OnInit {
 
     ngOnInit() {
         this.users = this.userService.getUsersService();
+        console.log(this.users);
         this.user = this.userService.getUser();
     }
 

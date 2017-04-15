@@ -75,9 +75,9 @@ export class UserService {
 
         // get users from api
         return this.http.get(this.apiURL + this.allURL, options)
-            .toPromise();
-            // .then(response => response.json().items)
-            // .catch();
+            .toPromise()
+            .then(response => response.json().items)
+            .catch(this.handleError);
     }
 
     private handleError(error: any): Promise<any> {
