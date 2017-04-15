@@ -48,11 +48,17 @@ export class WelcomeComponent implements OnInit {
             .then(games => this.games = games);
     }
 
-    ngOnInit() {
-        this.user = this.userService.getUser();
+    subscribeToNewGame() {
         this.gameService.gameCreation$.subscribe(
             (new_game) => this.games.push(new_game)
         );
+    }
+
+    ngOnInit() {
+        this.user = this.userService.getUser();
         this.getGames();
+
+        //Created because of Google Database not updating immediately
+        setTimeout(() => this.getGames(), 2000);
     }
 }
